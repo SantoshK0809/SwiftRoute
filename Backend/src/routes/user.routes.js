@@ -4,7 +4,10 @@ const { body } = require("express-validator");
 const {
   handleRegisterUser,
   handleLoginUser,
+  handleGetUserProfile,
+  handleUserLogout,
 } = require("../controllers/user.controller.js");
+const { authUser } = require("../middlewares/auth.middleware.js");
 
 router.post(
   "/register",
@@ -28,5 +31,9 @@ router.post(
   ],
   handleLoginUser,
 );
+
+router.get("/profile", authUser, handleGetUserProfile);
+
+router.post("/logout", authUser, handleUserLogout);
 
 module.exports = router;
