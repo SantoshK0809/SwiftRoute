@@ -1,6 +1,5 @@
 const User = require("../models/user.model.js");
 const Captain = require("../models/captain.model.js");
-const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const BlacklistToken = require("../models/blacklistToken.model.js");
 
@@ -18,6 +17,7 @@ module.exports.authUser = async function (req, res, next) {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded._id);
+
     if (!user) {
       return res.status(401).json({ message: "Unauthorized" });
     }
