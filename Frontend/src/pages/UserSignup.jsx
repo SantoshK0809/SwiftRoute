@@ -1,120 +1,53 @@
-// import React from "react";
-// import { Link } from "react-router-dom";
-
-// const UserSignup = () => {
-//   return (
-//     <div className="relative min-h-screen bg-[#020617] text-white flex items-center justify-center">
-//       {/* Background */}
-//       <div className="absolute inset-0 overflow-hidden">
-//         <div className="w-[300px] sm:w-[400px] h-[300px] sm:h-[400px] bg-blue-500/20 blur-3xl rounded-full absolute top-10 left-[-50px] sm:left-10"></div>
-//         <div className="w-[250px] sm:w-[350px] h-[250px] sm:h-[350px] bg-purple-500/20 blur-3xl rounded-full absolute bottom-10 right-[-50px] sm:right-10"></div>
-//       </div>
-
-//       {/* Container */}
-//       <div className="relative z-10 w-full px-4 sm:px-6 md:px-8">
-//         {/* Card */}
-//         <div className="w-full max-w-sm sm:max-w-md mx-auto bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl p-6 sm:p-8">
-//           {/* Title */}
-//           <h2 className="text-xl sm:text-2xl font-bold text-center mb-6">
-//             Create Account 🚀
-//           </h2>
-
-//           {/* Form */}
-//           <form className="flex flex-col gap-4 sm:gap-5">
-//             {/* Name Fields */}
-//             <div className="flex gap-3">
-//               <div className="w-1/2">
-//                 <label className="text-sm text-gray-300">First Name</label>
-//                 <input
-//                   type="text"
-//                   required
-//                   placeholder="First name"
-//                   className="w-full mt-2 p-2.5 sm:p-3 rounded-lg bg-white/10 border border-white/20
-//                              placeholder-gray-400 outline-none focus:border-blue-500 text-sm sm:text-base"
-//                 />
-//               </div>
-
-//               <div className="w-1/2">
-//                 <label className="text-sm text-gray-300">Last Name</label>
-//                 <input
-//                   type="text"
-//                   placeholder="Last name"
-//                   className="w-full mt-2 p-2.5 sm:p-3 rounded-lg bg-white/10 border border-white/20
-//                              placeholder-gray-400 outline-none focus:border-blue-500 text-sm sm:text-base"
-//                 />
-//               </div>
-//             </div>
-
-//             {/* Email */}
-//             <div>
-//               <label className="text-sm text-gray-300">Email</label>
-//               <input
-//                 type="email"
-//                 required
-//                 placeholder="Enter your email"
-//                 className="w-full mt-2 p-2.5 sm:p-3 rounded-lg bg-white/10 border border-white/20
-//                            placeholder-gray-400 outline-none focus:border-blue-500 text-sm sm:text-base"
-//               />
-//             </div>
-
-//             {/* Password */}
-//             <div>
-//               <label className="text-sm text-gray-300">Password</label>
-//               <input
-//                 type="password"
-//                 required
-//                 placeholder="Create a password"
-//                 className="w-full mt-2 p-2.5 sm:p-3 rounded-lg bg-white/10 border border-white/20
-//                            placeholder-gray-400 outline-none focus:border-blue-500 text-sm sm:text-base"
-//               />
-//             </div>
-
-//             {/* Button */}
-//             <button
-//               type="submit"
-//               className="mt-3 sm:mt-4 bg-blue-500 hover:bg-blue-600 py-2.5 sm:py-3 rounded-lg
-//                          font-semibold transition text-sm sm:text-base"
-//             >
-//               Sign Up
-//             </button>
-//           </form>
-
-//           {/* Divider */}
-//           <div className="flex items-center gap-3 my-5 sm:my-6">
-//             <div className="flex-1 h-px bg-white/10"></div>
-//             <span className="text-xs sm:text-sm text-gray-400">or</span>
-//             <div className="flex-1 h-px bg-white/10"></div>
-//           </div>
-
-//           {/* Links */}
-//           <div className="text-center text-xs sm:text-sm text-gray-400">
-//             <p>
-//               Already have an account?{" "}
-//               <Link to="/user-login" className="text-blue-400 hover:underline">
-//                 Login
-//               </Link>
-//             </p>
-
-//             <Link
-//               to="/captain-signup"
-//               className="block mt-3 text-gray-300 hover:text-white"
-//             >
-//               Sign up as Captain →
-//             </Link>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default UserSignup;
-
-import React from "react";
-import { Link } from "react-router-dom";
-import { Navigation, ArrowLeft } from "lucide-react";
+import React, { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Navigation, ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { UserDataContext } from "../context/UserContext";
+import axios from "axios";
 
 const UserSignup = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [userData, setUserData] = useState({});
+
+  const { user, setUser } = useContext(UserDataContext);
+
+  const navigate = useNavigate();
+
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    const newUser = {
+      fullname: {
+        firstname: firstName,
+        lastname: lastName,
+      },
+      email: email,
+      password: password,
+    };
+
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/user/register`,
+        newUser,
+      );
+      if (res.status === 201) {
+        const data = res.data;
+        setUser(data.user);
+        localStorage.setItem("token", data.token);
+        navigate("/user-login");
+      }
+    } catch (err) {
+      console.log(err.response.data); // THIS is what you should read
+    }
+
+    setFirstName("");
+    setLastName("");
+    setEmail("");
+    setPassword("");
+  };
+
   const inputClass =
     "w-full h-12 px-4 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition";
 
@@ -176,34 +109,62 @@ const UserSignup = () => {
             </div>
 
             {/* FORM */}
-            <form className="space-y-5">
+            <form onSubmit={handleSignup} className="space-y-5">
               {/* NAME */}
               <div className="flex gap-3">
                 <input
+                  required
                   type="text"
                   placeholder="First name"
                   className={inputClass}
+                  value={firstName}
+                  onChange={(e) => {
+                    setFirstName(e.target.value);
+                  }}
                 />
                 <input
                   type="text"
                   placeholder="Last name"
                   className={inputClass}
+                  value={lastName}
+                  onChange={(e) => {
+                    setLastName(e.target.value);
+                  }}
                 />
               </div>
 
               {/* EMAIL */}
               <input
+                required
                 type="email"
                 placeholder="Enter your email"
                 className={inputClass}
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                }}
               />
 
               {/* PASSWORD */}
-              <input
-                type="password"
-                placeholder="Create a password"
-                className={inputClass}
-              />
+              <div className="relative">
+                <input
+                  required
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Create a password"
+                  className={inputClass}
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
 
               {/* BUTTON */}
               <button
