@@ -14,6 +14,7 @@ async function handleRegisterCaptian(req, res) {
     }
 
     const { fullname, email, password, vehicle } = req.body;
+    console.log(fullname, password, email, vehicle);
 
     const captain = await Captain.findOne({ email });
     if (captain) {
@@ -33,8 +34,12 @@ async function handleRegisterCaptian(req, res) {
       vehicleType: vehicle.vehicleType,
     });
 
+    const token = await newCaptain.generateAuthToken();
+    res.cookie("token", token);
+
     res.status(201).json({
       message: "Captain registered successfully.",
+      token,
       newCaptain: {
         _id: newCaptain._id,
         fullname: newCaptain.fullname,
@@ -60,6 +65,8 @@ async function handleLoginCaptain(req, res) {
 
     const { email, password } = req.body;
 
+    console.log(email, password);
+
     const captain = await Captain.findOne({ email }).select("+password");
     if (!captain) {
       return res.status(401).json({ message: "Invalid credentials" });
@@ -76,6 +83,7 @@ async function handleLoginCaptain(req, res) {
 
     res.status(200).json({
       message: "Captain loggedIn successfully",
+      token,
     });
   } catch (err) {
     console.log(`Failed in login captian. Error message ${err.message}`);

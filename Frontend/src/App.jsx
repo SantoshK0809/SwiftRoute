@@ -1,23 +1,63 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
+import LandingPage from "./pages/LandingPage";
 import UserSignup from "./pages/UserSignup";
 import UserLogin from "./pages/UserLogin";
 import CaptainSignup from "./pages/CaptainSignup";
 import CaptainLogin from "./pages/CaptainLogin";
 import Navbar from "./pages/Navbar";
 import Footer from "./pages/Footer";
+import Home from "./pages/Home";
+import UserProtectWrapper from "./pages/UserProtectWrapper";
+import UserLogout from "./pages/UserLogout";
+import CaptainLogout from "./pages/CaptainLogout";
+import CaptainHome from "./pages/CaptainHome";
+import NotFound from "./pages/NotFound";
+import CaptainProtectWapper from "./pages/CaptainProtectWapper";
 
 const App = () => {
   return (
     <div>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/user-signup" element={<UserSignup />} />
         <Route path="/user-login" element={<UserLogin />} />
         <Route path="/captain-signup" element={<CaptainSignup />} />
         <Route path="/captain-login" element={<CaptainLogin />} />
+        <Route
+          path="/home"
+          element={
+            <UserProtectWrapper>
+              <Home />
+            </UserProtectWrapper>
+          }
+        />
+        <Route
+          path="/captain-home"
+          element={
+            <UserProtectWrapper>
+              <CaptainHome />
+            </UserProtectWrapper>
+          }
+        />
+        <Route
+          path="/user/logout"
+          element={
+            <UserProtectWrapper>
+              <UserLogout />
+            </UserProtectWrapper>
+          }
+        />
+        <Route
+          path="/captain/logout"
+          element={
+            <CaptainProtectWapper>
+              <CaptainLogout />
+            </CaptainProtectWapper>
+          }
+        />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
     </div>

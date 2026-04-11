@@ -1,163 +1,67 @@
-// import React from "react";
-// import { Link } from "react-router-dom";
-
-// const CaptainSignup = () => {
-//   return (
-//     <div className="relative min-h-screen bg-[#020617] text-white flex items-center justify-center">
-//       {/* Background */}
-//       <div className="absolute inset-0 overflow-hidden">
-//         <div className="w-[300px] sm:w-[400px] h-[300px] sm:h-[400px] bg-blue-500/20 blur-3xl rounded-full absolute top-10 left-[-50px] sm:left-10"></div>
-//         <div className="w-[250px] sm:w-[350px] h-[250px] sm:h-[350px] bg-purple-500/20 blur-3xl rounded-full absolute bottom-10 right-[-50px] sm:right-10"></div>
-//       </div>
-
-//       {/* Container */}
-//       <div className="relative z-10 w-full px-4 sm:px-6 md:px-8">
-//         {/* Card */}
-//         <div className="w-full max-w-md md:max-w-2xl mx-auto bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl p-6 sm:p-8">
-//           {/* Title */}
-//           <h2 className="text-xl sm:text-2xl font-bold text-center mb-6">
-//             Become a Captain 🚗
-//           </h2>
-
-//           <form className="flex flex-col gap-6">
-//             {/* PERSONAL INFO */}
-//             <div>
-//               <h3 className="text-sm text-gray-400 mb-3">Personal Details</h3>
-
-//               <div className="flex gap-3">
-//                 <div className="w-1/2">
-//                   <input
-//                     type="text"
-//                     required
-//                     placeholder="First name"
-//                     className="w-full p-2.5 sm:p-3 rounded-lg bg-white/10 border border-white/20
-//                                placeholder-gray-400 outline-none focus:border-blue-500 text-sm sm:text-base"
-//                   />
-//                 </div>
-
-//                 <div className="w-1/2">
-//                   <input
-//                     type="text"
-//                     placeholder="Last name"
-//                     className="w-full p-2.5 sm:p-3 rounded-lg bg-white/10 border border-white/20
-//                                placeholder-gray-400 outline-none focus:border-blue-500 text-sm sm:text-base"
-//                   />
-//                 </div>
-//               </div>
-
-//               <input
-//                 type="email"
-//                 required
-//                 placeholder="Email"
-//                 className="w-full mt-3 p-2.5 sm:p-3 rounded-lg bg-white/10 border border-white/20
-//                            placeholder-gray-400 outline-none focus:border-blue-500 text-sm sm:text-base"
-//               />
-
-//               <input
-//                 type="password"
-//                 required
-//                 placeholder="Password"
-//                 className="w-full mt-3 p-2.5 sm:p-3 rounded-lg bg-white/10 border border-white/20
-//                            placeholder-gray-400 outline-none focus:border-blue-500 text-sm sm:text-base"
-//               />
-//             </div>
-
-//             {/* VEHICLE INFO */}
-//             <div>
-//               <h3 className="text-sm text-gray-400 mb-3">Vehicle Details</h3>
-
-//               <div className="grid grid-cols-2 gap-3">
-//                 <input
-//                   type="text"
-//                   placeholder="Vehicle Color"
-//                   className="p-2.5 sm:p-3 rounded-lg bg-white/10 border border-white/20
-//                              placeholder-gray-400 outline-none focus:border-blue-500 text-sm sm:text-base"
-//                 />
-
-//                 <input
-//                   type="text"
-//                   required
-//                   placeholder="Plate Number"
-//                   className="p-2.5 sm:p-3 rounded-lg bg-white/10 border border-white/20
-//                              placeholder-gray-400 outline-none focus:border-blue-500 text-sm sm:text-base"
-//                 />
-
-//                 <input
-//                   type="number"
-//                   required
-//                   placeholder="Capacity"
-//                   className="p-2.5 sm:p-3 rounded-lg bg-white/10 border border-white/20
-//                              placeholder-gray-400 outline-none focus:border-blue-500 text-sm sm:text-base"
-//                 />
-
-//                 <select
-//                   required
-//                   className="p-2.5 sm:p-3 rounded-lg bg-white/10 border border-white/20
-//                              text-gray-300 outline-none focus:border-blue-500 text-sm sm:text-base"
-//                 >
-//                   <option
-//                     className="bg-gray-400 text-white"
-//                     value=""
-//                     disabled
-//                     selected
-//                   >
-//                     Vehicle Type
-//                   </option>
-//                   <option className="bg-gray-600 text-white" value="car">
-//                     Car
-//                   </option>
-//                   <option className="bg-gray-600 text-white" value="auto">
-//                     Auto
-//                   </option>
-//                   <option className="bg-gray-600 text-white" value="motorcycle">
-//                     Motorcycle
-//                   </option>
-//                 </select>
-//               </div>
-//             </div>
-
-//             {/* BUTTON */}
-//             <button
-//               type="submit"
-//               className="bg-blue-500 hover:bg-blue-600 py-2.5 sm:py-3 rounded-lg
-//                          font-semibold transition text-sm sm:text-base"
-//             >
-//               Register as Captain
-//             </button>
-//           </form>
-
-//           {/* LINKS */}
-//           <div className="text-center text-xs sm:text-sm text-gray-400 mt-6">
-//             <p>
-//               Already have an account?{" "}
-//               <Link
-//                 to="/captain-login"
-//                 className="text-blue-400 hover:underline"
-//               >
-//                 Login
-//               </Link>
-//             </p>
-
-//             <Link
-//               to="/user-signup"
-//               className="block mt-3 text-gray-300 hover:text-white"
-//             >
-//               Sign up as User →
-//             </Link>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default CaptainSignup;
-
-import React from "react";
-import { Link } from "react-router-dom";
-import { Navigation, ArrowLeft } from "lucide-react";
+import React, { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Navigation, ArrowLeft, Eye, EyeOff } from "lucide-react";
+import axios from "axios";
+import { CaptainDataContext } from "../context/CaptainContext";
 
 const CaptainSignup = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [color, setColor] = useState("");
+  const [plate, setPlate] = useState("");
+  const [capacity, setCapacity] = useState("");
+  const [vehicleType, setVehicleType] = useState("");
+  const [captainData, setCaptainData] = useState({});
+
+  const { captain, setCaptain } = useContext(CaptainDataContext);
+  const navigate = useNavigate();
+
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    const newCaptain = {
+      fullname: {
+        firstname: firstName,
+        lastname: lastName,
+      },
+      email: email,
+      password: password,
+      vehicle: {
+        color: color,
+        plate: plate,
+        capacity: capacity,
+        vehicleType: vehicleType,
+      },
+    };
+
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/captain/register`,
+        newCaptain,
+      );
+      console.log(`Captain Data -> ${res.data}`);
+      if (res.status === 201) {
+        const data = res.data;
+        localStorage.setItem("token", data.token);
+        setCaptain(data.captain);
+        navigate("/captain-login");
+      }
+    } catch (err) {
+      console.log(err.response?.message);
+    }
+
+    setFirstName("");
+    setLastName("");
+    setEmail("");
+    setPassword("");
+    setColor("");
+    setPlate("");
+    setCapacity("");
+    setVehicleType("");
+  };
+
   const inputClass =
     "w-full h-12 px-4 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition";
 
@@ -217,35 +121,68 @@ const CaptainSignup = () => {
               </p>
             </div>
 
-            <form className="flex flex-col gap-6">
+            <form
+              onSubmit={(e) => {
+                handleSignup(e);
+              }}
+              className="flex flex-col gap-6"
+            >
               {/* PERSONAL */}
               <div>
                 <h3 className="text-sm text-gray-400 mb-3">Personal Details</h3>
 
                 <div className="flex gap-3">
                   <input
+                    required
                     type="text"
                     placeholder="First name"
                     className={inputClass}
+                    value={firstName}
+                    onChange={(e) => {
+                      setFirstName(e.target.value);
+                    }}
                   />
                   <input
                     type="text"
                     placeholder="Last name"
                     className={inputClass}
+                    value={lastName}
+                    onChange={(e) => {
+                      setLastName(e.target.value);
+                    }}
                   />
                 </div>
 
                 <input
+                  required
                   type="email"
                   placeholder="Email"
                   className={`${inputClass} mt-3`}
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
                 />
 
-                <input
-                  type="password"
-                  placeholder="Password"
-                  className={`${inputClass} mt-3`}
-                />
+                <div className="relative">
+                  <input
+                    required
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    className={`${inputClass} mt-3`}
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
               </div>
 
               {/* VEHICLE */}
@@ -257,19 +194,40 @@ const CaptainSignup = () => {
                     type="text"
                     placeholder="Vehicle Color"
                     className={inputClass}
+                    value={color}
+                    onChange={(e) => {
+                      setColor(e.target.value);
+                    }}
                   />
                   <input
+                    required
                     type="text"
                     placeholder="Plate Number"
                     className={inputClass}
+                    value={plate}
+                    onChange={(e) => {
+                      setPlate(e.target.value);
+                    }}
                   />
                   <input
+                    required
                     type="number"
                     placeholder="Capacity"
                     className={inputClass}
+                    value={capacity}
+                    onChange={(e) => {
+                      setCapacity(e.target.value);
+                    }}
                   />
 
-                  <select className={inputClass}>
+                  <select
+                    required
+                    className={inputClass}
+                    value={vehicleType}
+                    onChange={(e) => {
+                      setVehicleType(e.target.value);
+                    }}
+                  >
                     <option className="bg-gray-400 text-white" value="">
                       Vehicle Type
                     </option>
