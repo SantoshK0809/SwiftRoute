@@ -36,7 +36,7 @@ const NotFound = () => {
         {/* Actions */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
-            to="/"
+            to="/home"
             className="bg-blue-500 hover:bg-blue-600 px-6 py-3 rounded-lg font-semibold transition"
           >
             Go to Home

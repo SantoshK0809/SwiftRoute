@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { Navigation, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { UserDataContext } from "../context/UserContext";
 import axios from "axios";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const UserSignup = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -52,8 +54,10 @@ const UserSignup = () => {
     "w-full h-12 px-4 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition";
 
   return (
-    <div className="min-h-screen bg-[#020617] flex">
-      {/* LEFT PANEL */}
+    <div className="min-h-screen bg-[#020617] flex flex-col">
+      <Navbar />
+      <div className="flex flex-1">
+        {/* LEFT PANEL */}
       <div className="hidden lg:flex lg:w-1/2 relative items-center justify-center border-r border-white/10 overflow-hidden">
         {/* Glow Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-purple-500/10"></div>
@@ -191,6 +195,8 @@ const UserSignup = () => {
           </div>
         </div>
       </div>
+      </div>
+      <Footer />
     </div>
   );
 };

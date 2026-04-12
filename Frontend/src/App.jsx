@@ -5,8 +5,8 @@ import UserSignup from "./pages/UserSignup";
 import UserLogin from "./pages/UserLogin";
 import CaptainSignup from "./pages/CaptainSignup";
 import CaptainLogin from "./pages/CaptainLogin";
-import Navbar from "./pages/Navbar";
-import Footer from "./pages/Footer";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import UserProtectWrapper from "./pages/UserProtectWrapper";
 import UserLogout from "./pages/UserLogout";
@@ -14,11 +14,13 @@ import CaptainLogout from "./pages/CaptainLogout";
 import CaptainHome from "./pages/CaptainHome";
 import NotFound from "./pages/NotFound";
 import CaptainProtectWapper from "./pages/CaptainProtectWapper";
+import LoginNavbar from "./components/LoginNavbar";
 
 const App = () => {
+  const token = localStorage.getItem("token");
   return (
     <div>
-      <Navbar />
+      {/* {token ? <LoginNavbar /> : <Navbar />} */}
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/user-signup" element={<UserSignup />} />
@@ -59,7 +61,7 @@ const App = () => {
         />
         <Route path="*" element={<NotFound />} />
       </Routes>
-      <Footer />
+      {/* {token ? null : <Footer />} */}
     </div>
   );
 };

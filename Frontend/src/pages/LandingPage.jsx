@@ -29,12 +29,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { MapPin, Navigation, Car, Shield, Zap } from "lucide-react";
+import Footer from "../components/Footer";
+import Navbar from "../components/Navbar";
 
 const LandingPage = () => {
   return (
     <div className="bg-[#020617] text-white min-h-screen">
       {/* HEADER */}
-
+      <Navbar/>
       {/* HERO */}
       <section className="pt-28 pb-20 px-6 md:px-16 max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
         {/* LEFT */}
@@ -247,6 +249,7 @@ const LandingPage = () => {
       </section>
 
       {/* FOOTER */}
+      <Footer/>
     </div>
   );
 };
