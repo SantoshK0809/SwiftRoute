@@ -15,6 +15,8 @@ import CaptainHome from "./pages/CaptainHome";
 import NotFound from "./pages/NotFound";
 import CaptainProtectWapper from "./pages/CaptainProtectWapper";
 import LoginNavbar from "./components/LoginNavbar";
+import Riding from "./pages/Riding";
+import CaptainRiding from "./pages/CaptainRiding";
 
 const App = () => {
   const token = localStorage.getItem("token");
@@ -38,9 +40,9 @@ const App = () => {
         <Route
           path="/captain-home"
           element={
-            <UserProtectWrapper>
+            <CaptainProtectWapper>
               <CaptainHome />
-            </UserProtectWrapper>
+            </CaptainProtectWapper>
           }
         />
         <Route
@@ -56,6 +58,15 @@ const App = () => {
           element={
             <CaptainProtectWapper>
               <CaptainLogout />
+            </CaptainProtectWapper>
+          }
+        />
+        <Route path="/riding" element={<Riding />} />
+        <Route
+          path="/captain-riding"
+          element={
+            <CaptainProtectWapper>
+              <CaptainRiding />
             </CaptainProtectWapper>
           }
         />
