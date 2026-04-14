@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   handleGetAddressCoordinate,
   handleGetDistanceAndTime,
+  handleGetSuggestion
 } = require("../controllers/map.controller");
 const { authUser } = require("../middlewares/auth.middleware");
 const { query } = require("express-validator");
@@ -22,6 +23,13 @@ router.get(
   ],
   authUser,
   handleGetDistanceAndTime,
+);
+
+router.get(
+  "/get-suggestions",
+  [query("address").notEmpty().withMessage("Address is required")],
+  authUser,
+  handleGetSuggestion,
 );
 
 module.exports = router;

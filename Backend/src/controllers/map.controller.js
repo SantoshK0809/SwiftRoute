@@ -54,3 +54,30 @@ module.exports.handleGetDistanceAndTime = async (req, res) => {
         });
     }
 }
+
+module.exports.handleGetSuggestion = async (req, res) => {
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                success: false,
+                message: "Validation error",
+                errors: errors.array()
+            });
+        }
+        
+        const { address } = req.query;
+        const suggestions = await mapService.getAutoCompleteSuggestions(address);
+        res.status(200).json({
+            success: true,
+            message: "Suggestions fetched successfully",
+            data: suggestions
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch suggestions",
+            error: error.message
+        });
+    }
+}

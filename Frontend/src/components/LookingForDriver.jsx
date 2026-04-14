@@ -58,7 +58,7 @@ const LookingForDriver = (props) => {
           <MapPin className="text-blue-400 mt-1" size={18} />
           <div>
             <h4 className="text-sm font-semibold">Pickup</h4>
-            <p className="text-xs">Mantri Heights, Pune</p>
+            <p className="text-xs">{props.pickup}</p>
           </div>
         </div>
 
@@ -67,7 +67,7 @@ const LookingForDriver = (props) => {
           <Navigation className="text-blue-400 mt-1" size={18} />
           <div>
             <h4 className="text-sm font-semibold">Destination</h4>
-            <p className="text-xs">Dagdusheth Mandir, Pune</p>
+            <p className="text-xs">{props.destination}</p>
           </div>
         </div>
 
@@ -75,7 +75,7 @@ const LookingForDriver = (props) => {
         <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
           <CreditCard className="text-blue-400 mt-1" size={18} />
           <div>
-            <h4 className="text-sm font-semibold">₹193</h4>
+            <h4 className="text-sm font-semibold">₹{props.fare[props.vehicleType] || 0}</h4>
             <p className="text-xs">Cash Payment</p>
           </div>
         </div>

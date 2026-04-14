@@ -506,3 +506,317 @@ Captain is not authenticated.
 
 #### `500 Internal Server Error`
 An unexpected server error occurred.
+
+---
+
+# Maps API Documentation
+
+## Get Address Coordinate
+
+Retrieves the latitude and longitude coordinates for a given address using the Mapbox Geocoding API.
+
+**URL**: `/api/map/get-coordinate`  
+**Method**: `GET`  
+**Auth Required**: Yes
+
+### Query Parameters
+
+| Parameter | Type | Required | Description | Validation |
+| :--- | :--- | :--- | :--- | :--- |
+| `address` | String | Yes | The address to geocode | Cannot be empty |
+
+### Response Status Codes & Responses
+
+#### `200 OK`
+Successfully retrieved coordinates for the address.
+
+**Example Response:**
+```json
+{
+  "success": true,
+  "message": "Address coordinate fetched successfully",
+  "data": {
+    "ltd": 19.0760,
+    "lang": 72.8777
+  }
+}
+```
+
+#### `400 Bad Request`
+Validation failed (e.g., missing address parameter).
+
+**Example Response:**
+```json
+{
+  "success": false,
+  "message": "Validation error",
+  "errors": [
+    {
+      "msg": "Address is required",
+      "param": "address",
+      "location": "query"
+    }
+  ]
+}
+```
+
+#### `401 Unauthorized`
+User is not authenticated.
+
+#### `500 Internal Server Error`
+Failed to fetch coordinates (e.g., invalid address or API error).
+
+**Example Response:**
+```json
+{
+  "success": false,
+  "message": "Failed to fetch address coordinate",
+  "error": "Unable to fetch coordinates for the given address"
+}
+```
+
+---
+
+## Get Distance and Time
+
+Calculates the distance and estimated travel time between two locations using the Mapbox Directions API.
+
+**URL**: `/api/map/get-distance`  
+**Method**: `GET`  
+**Auth Required**: Yes
+
+### Query Parameters
+
+| Parameter | Type | Required | Description | Validation |
+| :--- | :--- | :--- | :--- | :--- |
+| `pickup` | String | Yes | The pickup address | Cannot be empty |
+| `destination` | String | Yes | The destination address | Cannot be empty |
+
+### Response Status Codes & Responses
+
+#### `200 OK`
+Successfully calculated distance and time.
+
+**Example Response:**
+```json
+{
+  "success": true,
+  "message": "Distance fetched successfully",
+  "data": {
+    "distance": {
+      "text": "15.2 km",
+      "value": 15200
+    },
+    "duration": {
+      "text": "25 mins",
+      "value": 1500
+    }
+  }
+}
+```
+
+#### `400 Bad Request`
+Validation failed (e.g., missing pickup or destination).
+
+**Example Response:**
+```json
+{
+  "success": false,
+  "message": "Validation error",
+  "errors": [
+    {
+      "msg": "Pickup is required",
+      "param": "pickup",
+      "location": "query"
+    }
+  ]
+}
+```
+
+#### `401 Unauthorized`
+User is not authenticated.
+
+#### `500 Internal Server Error`
+Failed to calculate distance and time (e.g., invalid addresses or API error).
+
+**Example Response:**
+```json
+{
+  "success": false,
+  "message": "Failed to fetch distance",
+  "error": "Unable to fetch coordinates for the provided addresses"
+}
+```
+
+---
+
+## Get Suggestions
+
+Provides autocomplete suggestions for addresses based on a partial input using the Mapbox Geocoding API.
+
+**URL**: `/api/map/get-suggestions`  
+**Method**: `GET`  
+**Auth Required**: Yes
+
+### Query Parameters
+
+| Parameter | Type | Required | Description | Validation |
+| :--- | :--- | :--- | :--- | :--- |
+| `address` | String | Yes | The partial address to get suggestions for | Cannot be empty |
+
+### Response Status Codes & Responses
+
+#### `200 OK`
+Successfully retrieved suggestions.
+
+**Example Response:**
+```json
+{
+  "success": true,
+  "message": "Suggestions fetched successfully",
+  "data": [
+    {
+      "description": "Mumbai, Maharashtra, India",
+      "structured_formatting": {
+        "main_text": "Mumbai",
+        "secondary_text": "Maharashtra, India"
+      },
+      "terms": [
+        {
+          "value": "Mumbai"
+        },
+        {
+          "value": "Maharashtra"
+        },
+        {
+          "value": "India"
+        }
+      ],
+      "location": {
+        "ltd": 19.0760,
+        "lang": 72.8777
+      }
+    }
+  ]
+}
+```
+
+#### `400 Bad Request`
+Validation failed (e.g., missing address parameter).
+
+**Example Response:**
+```json
+{
+  "success": false,
+  "message": "Validation error",
+  "errors": [
+    {
+      "msg": "Address is required",
+      "param": "address",
+      "location": "query"
+    }
+  ]
+}
+```
+
+#### `401 Unauthorized`
+User is not authenticated.
+
+#### `500 Internal Server Error`
+Failed to fetch suggestions (e.g., API error).
+
+**Example Response:**
+```json
+{
+  "success": false,
+  "message": "Failed to fetch suggestions",
+  "error": "Unable to fetch suggestions"
+}
+```
+
+---
+
+# Ride API Documentation
+
+## Create Ride
+
+Creates a new ride request, calculates the fare based on distance and vehicle type, generates a 6-digit OTP, and saves the ride to the database.
+
+**URL**: `/api/ride/create`  
+**Method**: `POST`  
+**Auth Required**: Yes
+
+### Request Body
+
+The request body must be a JSON object containing the following fields:
+
+| Field | Type | Required | Description | Validation |
+| :--- | :--- | :--- | :--- | :--- |
+| `userId` | String | Yes | The ID of the user creating the ride | Cannot be empty |
+| `pickup` | String | Yes | The pickup address | Cannot be empty |
+| `destination` | String | Yes | The destination address | Cannot be empty |
+| `vehicleType` | String | Yes | The type of vehicle (auto, car, motorcycle) | Cannot be empty |
+
+**Example Request:**
+```json
+{
+  "userId": "60d0fe4f5311236168a109ca",
+  "pickup": "Mumbai Central",
+  "destination": "Andheri",
+  "vehicleType": "car"
+}
+```
+
+### Response Status Codes & Responses
+
+#### `201 Created`
+Successfully created the ride. Returns the ride details including calculated fare and generated OTP (OTP is hidden in select: false).
+
+**Example Response:**
+```json
+{
+  "success": true,
+  "message": "Ride created successfully",
+  "data": {
+    "_id": "60d0fe4f5311236168a109cc",
+    "userId": "60d0fe4f5311236168a109ca",
+    "pickup": "Mumbai Central",
+    "destination": "Andheri",
+    "vehicleType": "car",
+    "fare": 150,
+    "status": "pending",
+    "createdAt": "2023-06-22T10:30:00.000Z",
+    "updatedAt": "2023-06-22T10:30:00.000Z"
+  }
+}
+```
+
+#### `400 Bad Request`
+Validation failed for the request body (e.g., missing required fields).
+
+**Example Response:**
+```json
+{
+  "errors": [
+    {
+      "msg": "User ID is required",
+      "param": "userId",
+      "location": "body"
+    }
+  ]
+}
+```
+
+#### `401 Unauthorized`
+User is not authenticated.
+
+#### `500 Internal Server Error`
+Failed to create the ride (e.g., invalid addresses, database error).
+
+**Example Response:**
+```json
+{
+  "success": false,
+  "message": "Pickup and destination are required"
+}
+```
