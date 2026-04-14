@@ -1,8 +1,10 @@
 const http = require('http');
 const app = require("./src/app.js");
+const { initializeSocket } = require("./socket");
 const port = process.env.PORT || 3000;
 const server = http.createServer(app);
 
+initializeSocket(server);
 
 server.listen(port, () => {
     console.log(`Listening to port - ${port}`)

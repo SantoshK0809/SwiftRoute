@@ -68,7 +68,7 @@ const CaptainHome = () => {
       <div className="absolute top-20 left-1/2 -translate-x-1/2 z-20">
         <div className="glass rounded-full px-4 py-2 flex items-center gap-2">
           <span className="h-2.5 w-2.5 rounded-full bg-green-400 animate-pulse" />
-          <span className="text-xs font-medium text-foreground">
+          <span className="text-base font-medium text-foreground">
             You're Online
           </span>
         </div>
@@ -132,10 +132,10 @@ const CaptainHome = () => {
             // confirmRidePopupRef.current.style.display = 'none';
             setCaptainDetailsPanel(false);
           }}
-          className="glass rounded-lg px-3 py-2 text-xs font-medium text-foreground hover:bg-secondary transition"
+          className="glass rounded-lg px-3 py-2 text-base cursor-pointer font-medium text-foreground hover:bg-secondary transition"
         >
-          <ChevronUp className="h-3 w-3 inline mr-1" />
-          Test Ride
+          <ChevronUp className=" inline mr-1" size={22}/>
+          Test Ride 
         </button>
       </div>
     </div>

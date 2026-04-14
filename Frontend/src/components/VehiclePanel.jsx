@@ -25,6 +25,8 @@ const VehiclePanel = (props) => {
       <div
         onClick={() => {
           props.setConfirmRidePanel(true);
+          // props.createRide('car');
+          props.setVehicleType('car');
         }}
         className="flex items-center justify-between p-4 mb-3 rounded-2xl 
                       bg-white/5 border border-white/10 hover:bg-white/10 transition cursor-pointer"
@@ -47,13 +49,15 @@ const VehiclePanel = (props) => {
           <p className="text-xs text-white">Affordable, compact rides</p>
         </div>
 
-        <h2 className="text-sm font-semibold">₹193</h2>
+        <h2 className="text-sm font-semibold">₹{props.fare?.car || 'Calculating...'}</h2>
       </div>
 
       {/* CARD 2 */}
       <div
         onClick={() => {
           props.setConfirmRidePanel(true);
+          // props.createRide('motorcycle');
+          props.setVehicleType('motorcycle');
         }}
         className="flex items-center justify-between p-4 mb-3 rounded-2xl 
                       bg-white/5 border border-white/10 hover:bg-white/10 transition cursor-pointer"
@@ -76,13 +80,14 @@ const VehiclePanel = (props) => {
           <p className="text-xs text-white">Affordable motorcycle rides</p>
         </div>
 
-        <h2 className="text-sm font-semibold">₹65</h2>
+        <h2 className="text-sm font-semibold">₹{props.fare?.motorcycle || 'Calculating...'}</h2>
       </div>
 
       {/* CARD 3 */}
       <div
         onClick={() => {
           props.setConfirmRidePanel(true);
+          props.setVehicleType('auto');
         }}
         className="flex items-center justify-between p-4 rounded-2xl 
                       bg-white/5 border border-white/10 hover:bg-white/10 transition cursor-pointer"
@@ -105,7 +110,7 @@ const VehiclePanel = (props) => {
           <p className="text-xs text-white">Affordable auto rides</p>
         </div>
 
-        <h2 className="text-sm font-semibold">₹110</h2>
+        <h2 className="text-sm font-semibold">₹{props.fare?.auto || 'Calculating...'}</h2>
       </div>
     </div>
   );

@@ -1,398 +1,7 @@
-// import React from "react";
-// import { Navigation } from "lucide-react";
-// const Home = () => {
-//   return (
-//     <div className="h-screen w-full relative bg-[#020617] text-white overflow-hidden">
-//       {/* MAP */}
-//       <div className="absolute inset-0">
-//         <img
-//           src="https://tse2.mm.bing.net/th/id/OIP.CdPGs2UrpqjBv7cg9JrLTwHaLx?pid=ImgDet&w=198&h=315&c=7&dpr=2&o=7&rm=3"
-//           alt="map"
-//           className="w-full h-full object-cover opacity-70"
-//         />
-//         <div className="absolute inset-0 bg-black/30"></div>
-//       </div>
-
-//       {/* LOGO */}
-//       <div className="absolute top-5 left-5 z-20 flex items-center gap-2">
-//         <Navigation className="text-blue-400" />
-//         <span className="font-bold text-lg">SwiftRoute</span>
-//       </div>
-
-//       {/* MAIN SEARCH CARD */}
-//       <div className="absolute bottom-0 w-full z-20 px-4 sm:px-6 pb-6">
-//         <div className="max-w-xl mx-auto bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl p-5">
-//           {/* DRAG HANDLE */}
-//           <div className="w-12 h-1 bg-white/20 rounded-full mx-auto mb-4"></div>
-
-//           <h4 className="text-lg sm:text-xl font-semibold mb-4">Find a trip</h4>
-
-//           {/* INPUTS */}
-//           <div className="space-y-3 relative">
-//             {/* Vertical line */}
-//             <div className="absolute left-4 top-5 bottom-5 w-[2px] bg-white/20"></div>
-
-//             <input
-//               type="text"
-//               placeholder="Add a pick-up location"
-//               className="w-full bg-white/10 border border-white/10 rounded-lg px-10 py-3 text-sm sm:text-base
-//                          placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-//             />
-
-//             <input
-//               type="text"
-//               placeholder="Enter your destination"
-//               className="w-full bg-white/10 border border-white/10 rounded-lg px-10 py-3 text-sm sm:text-base
-//                          placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-//             />
-//           </div>
-
-//           {/* BUTTON */}
-//           <button className="w-full mt-4 bg-blue-500 hover:bg-blue-600 py-3 rounded-lg font-semibold transition">
-//             Find Trip
-//           </button>
-//         </div>
-//       </div>
-
-//       {/* BOTTOM SHEETS (STRUCTURED) */}
-//       <div className="absolute bottom-0 w-full z-10 space-y-2 px-2 pb-2">
-//         {/* Vehicle Panel */}
-//         <div className="translate-y-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 text-white">
-//           Vehicle Panel
-//         </div>
-
-//         {/* Confirm Ride */}
-//         <div className="translate-y-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 text-white">
-//           Confirm Ride
-//         </div>
-
-//         {/* Looking */}
-//         <div className="translate-y-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 text-white">
-//           Looking for driver
-//         </div>
-
-//         {/* Waiting */}
-//         <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 text-white">
-//           Waiting for Driver
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Home;
-
-// import React, { useState } from "react";
-// import {
-//   Navigation,
-//   MapPin,
-//   Search,
-//   Clock,
-//   Star,
-//   Car,
-//   Bike,
-//   Truck,
-//   Menu,
-//   User,
-//   CarTaxiFront,
-//   ChevronRight,
-// } from "lucide-react";
-// import { Link } from "react-router-dom";
-// import LoginNavbar from "../components/LoginNavbar";
-
-// const Home = () => {
-//   const [pickup, setPickup] = useState("");
-//   const [destination, setDestination] = useState("");
-
-//   const rides = [
-//     { icon: Bike, name: "Bike", time: "2 min" },
-//     { icon: Car, name: "Car", time: "4 min" },
-//     { icon: CarTaxiFront, name: "Auto", time: "3 min" },
-//     { icon: Truck, name: "XL", time: "6 min" },
-//   ];
-
-//   const locations = [
-//     { name: "Home", address: "Kothrud, Pune", icon: Star },
-//     { name: "Office", address: "Hinjewadi Phase 1", icon: Clock },
-//   ];
-
-//   return (
-//     <div className="h-screen w-full relative bg-[#020617] text-white overflow-hidden">
-//       {/* MAP */}
-//       <div className="absolute inset-0">
-//         <img
-//           src="https://tse2.mm.bing.net/th/id/OIP.CdPGs2UrpqjBv7cg9JrLTwHaLx?pid=ImgDet&w=198&h=315&c=7&dpr=2&o=7&rm=3"
-//           className="w-full h-full object-cover opacity-70"
-//         />
-//         <div className="absolute inset-0 bg-black/40"></div>
-//       </div>
-
-//       {/* TOP BAR */}
-//       {/* <LoginNavbar /> */}
-
-//       {/* SEARCH PANEL */}
-//       <div className="absolute bottom-0 w-full z-20 px-4 pb-6">
-//         <div className="max-w-xl mx-auto bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5">
-//           {/* Handle */}
-//           <div className="w-10 h-1 bg-white/20 mx-auto rounded-full mb-4"></div>
-
-//           <h3 className="text-lg font-semibold mb-4">Where to?</h3>
-
-//           {/* Inputs */}
-//           <div className="space-y-3 relative">
-//             {/* connector */}
-//             <div className="absolute left-4 top-6 bottom-6 w-[2px] bg-white/20"></div>
-
-//             {/* Pickup */}
-//             <div className="relative">
-//               <input
-//                 value={pickup}
-//                 onChange={(e) => setPickup(e.target.value)}
-//                 placeholder="Add pickup location"
-//                 className="w-full bg-white/10 border border-white/10 rounded-lg pl-10 pr-10 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
-//               />
-//               <MapPin
-//                 className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-400"
-//                 size={16}
-//               />
-//             </div>
-
-//             {/* Destination */}
-//             <div className="relative">
-//               <input
-//                 value={destination}
-//                 onChange={(e) => setDestination(e.target.value)}
-//                 placeholder="Enter destination"
-//                 className="w-full bg-white/10 border border-white/10 rounded-lg pl-10 pr-10 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
-//               />
-//               <Search
-//                 className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-400"
-//                 size={16}
-//               />
-//             </div>
-//           </div>
-
-//           {/* Ride Options */}
-//           <div className="flex gap-2 mt-4 overflow-x-auto">
-//             {rides.map((ride, i) => (
-//               <div
-//                 key={i}
-//                 className="min-w-[80px] flex flex-col items-center gap-1 px-4 py-3 rounded-xl bg-white/10 border border-white/10"
-//               >
-//                 <ride.icon size={18} />
-//                 <span className="text-xs">{ride.name}</span>
-//                 <span className="text-[10px] text-gray-400">{ride.time}</span>
-//               </div>
-//             ))}
-//           </div>
-
-//           {/* Button */}
-//           <button className="w-full mt-4 bg-blue-500 py-3 rounded-lg font-semibold hover:bg-blue-600">
-//             Find Trip
-//           </button>
-
-//           {/* Recent */}
-//           <div className="mt-4 space-y-2">
-//             {locations.map((loc, i) => (
-//               <div
-//                 key={i}
-//                 className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10"
-//               >
-//                 <loc.icon size={16} />
-//                 <div className="flex-1">
-//                   <p className="text-sm">{loc.name}</p>
-//                   <p className="text-xs text-gray-400">{loc.address}</p>
-//                 </div>
-//                 <ChevronRight size={16} />
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Home;
-
-// import React, { useState } from "react";
-// import {
-//   Navigation,
-//   MapPin,
-//   Search,
-//   Clock,
-//   Star,
-//   Car,
-//   Bike,
-//   Truck,
-//   ChevronRight,
-//   CarTaxiFront,
-// } from "lucide-react";
-
-// const Home = () => {
-//   const [pickup, setPickup] = useState("");
-//   const [destination, setDestination] = useState("");
-//   const [activePanel, setActivePanel] = useState("search");
-
-//   const rides = [
-//     { icon: Bike, name: "Bike", price: "₹40" },
-//     { icon: Car, name: "Car", price: "₹120" },
-//     { icon: CarTaxiFront, name: "Auto", price: "₹80" },
-//     { icon: Truck, name: "XL", price: "₹180" },
-//   ];
-
-//   const locations = [
-//     { name: "Home", address: "Kothrud, Pune", icon: Star },
-//     { name: "Office", address: "Hinjewadi Phase 1", icon: Clock },
-//   ];
-
-//   return (
-//     <div className="h-screen w-full relative bg-[#020617] text-white overflow-hidden">
-//       {/* MAP */}
-//       <div className="absolute inset-0">
-//         <img
-//           src="https://tse2.mm.bing.net/th/id/OIP.CdPGs2UrpqjBv7cg9JrLTwHaLx"
-//           className="w-full h-full object-cover opacity-70"
-//         />
-//         <div className="absolute inset-0 bg-black/40"></div>
-//       </div>
-
-//       {/* ================= SEARCH PANEL ================= */}
-//       {activePanel === "search" && (
-//         <BottomSheet>
-//           <h3 className="text-lg font-semibold mb-4">Where to?</h3>
-
-//           <InputSection
-//             pickup={pickup}
-//             setPickup={setPickup}
-//             destination={destination}
-//             setDestination={setDestination}
-//           />
-
-//           <button
-//             onClick={() => setActivePanel("vehicle")}
-//             className="w-full mt-4 bg-blue-500 py-3 rounded-lg"
-//           >
-//             Find Trip
-//           </button>
-//         </BottomSheet>
-//       )}
-
-//       {/* ================= VEHICLE PANEL ================= */}
-//       {activePanel === "vehicle" && (
-//         <BottomSheet>
-//           <h3 className="text-lg font-semibold mb-4">Choose Ride</h3>
-
-//           {rides.map((ride, i) => (
-//             <div
-//               key={i}
-//               onClick={() => setActivePanel("confirm")}
-//               className="flex justify-between items-center p-3 rounded-lg hover:bg-white/10"
-//             >
-//               <div className="flex items-center gap-3">
-//                 <ride.icon />
-//                 <span>{ride.name}</span>
-//               </div>
-//               <span>{ride.price}</span>
-//             </div>
-//           ))}
-//         </BottomSheet>
-//       )}
-
-//       {/* ================= CONFIRM PANEL ================= */}
-//       {activePanel === "confirm" && (
-//         <BottomSheet>
-//           <h3 className="text-lg font-semibold mb-4">Confirm Ride</h3>
-
-//           <p className="text-sm text-gray-400 mb-4">
-//             {pickup} → {destination}
-//           </p>
-
-//           <button
-//             onClick={() => setActivePanel("searching")}
-//             className="w-full bg-blue-500 py-3 rounded-lg"
-//           >
-//             Confirm Ride
-//           </button>
-//         </BottomSheet>
-//       )}
-
-//       {/* ================= SEARCHING ================= */}
-//       {activePanel === "searching" && (
-//         <BottomSheet>
-//           <h3 className="text-lg font-semibold">Finding Driver...</h3>
-//           <p className="text-gray-400 mt-2">Please wait</p>
-
-//           <button
-//             onClick={() => setActivePanel("waiting")}
-//             className="mt-4 text-blue-400"
-//           >
-//             Simulate Found Driver →
-//           </button>
-//         </BottomSheet>
-//       )}
-
-//       {/* ================= WAITING ================= */}
-//       {activePanel === "waiting" && (
-//         <BottomSheet>
-//           <h3 className="text-lg font-semibold">Driver Found 🚗</h3>
-//           <p className="text-gray-400 mt-2">Arriving in 3 mins</p>
-//         </BottomSheet>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default Home;
-
-// /* ================= REUSABLE COMPONENTS ================= */
-
-// const BottomSheet = ({ children }) => (
-//   <div className="absolute bottom-0 w-full px-4 pb-6">
-//     <div className="max-w-xl mx-auto bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5">
-//       {/* Handle */}
-//       <div className="w-10 h-1 bg-white/20 mx-auto mb-4 rounded-full"></div>
-
-//       {children}
-//     </div>
-//   </div>
-// );
-
-// const InputSection = ({ pickup, setPickup, destination, setDestination }) => (
-//   <div className="space-y-3 relative">
-//     <div className="absolute left-4 top-6 bottom-6 w-[2px] bg-white/20"></div>
-
-//     <div className="relative">
-//       <input
-//         value={pickup}
-//         onChange={(e) => setPickup(e.target.value)}
-//         placeholder="Pickup"
-//         className="w-full bg-white/10 border border-white/10 rounded-lg pl-10 py-3"
-//       />
-//       <MapPin
-//         className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-400"
-//         size={16}
-//       />
-//     </div>
-
-//     <div className="relative">
-//       <input
-//         value={destination}
-//         onChange={(e) => setDestination(e.target.value)}
-//         placeholder="Destination"
-//         className="w-full bg-white/10 border border-white/10 rounded-lg pl-10 py-3"
-//       />
-//       <Search
-//         className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-400"
-//         size={16}
-//       />
-//     </div>
-//   </div>
-// );
-
-import { useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import axios from "axios";
 import {
   Navigation,
   MapPin,
@@ -412,15 +21,23 @@ import VehiclePanel from "../components/VehiclePanel";
 import ConfirmRide from "../components/ConfirmRide";
 import LookingForDriver from "../components/LookingForDriver";
 import WaitingForDriver from "../components/WaitingForDriver";
+import { SocketDataContext } from "../context/SocketContext";
+import { Socket } from "socket.io-client";
+import { UserDataContext } from "../context/UserContext";
 
 const Home = () => {
   const [pickup, setPickup] = useState("");
   const [destination, setDestination] = useState("");
+  const [vehicleType, setVehicleType] = useState(null);
+  const [ride, setRide] = useState(null);
   const [panelOpen, setPanelOpen] = useState(false);
   const [vehiclePanel, setVehiclePanel] = useState(false);
   const [confirmRidePanel, setConfirmRidePanel] = useState(false);
   const [lookingForDriverPanel, setLookingForDriverPanel] = useState(false);
   const [waitingForDriverPanel, setWaitingForDriverPanel] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [activeField, setActiveField] = useState(null);
+  const [fare, setFare] = useState({});
 
   const vehiclePanelRef = useRef(null);
 
@@ -430,8 +47,66 @@ const Home = () => {
   const lookingForDriverPanelRef = useRef(null);
   const waitingForDriverRef = useRef(null);
 
+  const { sendMessageToEvent, subscribeToEvent } = useContext(SocketDataContext);
+  const { user } = useContext(UserDataContext);
+
+  useEffect(() => {
+    
+    console.log(user)
+    sendMessageToEvent("join", { userType: "user", userId: user?._id });
+    
+  }, [user])
+  
+
   const submitHandler = (e) => {
     e.preventDefault();
+  };
+
+  const fetchSuggestions = async (address) => {
+    if (!address.trim()) {
+      setSuggestions([]);
+      return;
+    }
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/api/map/get-suggestions`,
+        {
+          params: { address },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      setSuggestions(response.data.data || []);
+    } catch (error) {
+      console.error("Error fetching suggestions:", error);
+      setSuggestions([]);
+    }
+  };
+
+  const handlePickupChange = (e) => {
+    const value = e.target.value;
+    setPickup(value);
+    setActiveField("pickup");
+    fetchSuggestions(value);
+  };
+
+  const handleDestinationChange = (e) => {
+    const value = e.target.value;
+    setDestination(value);
+    setActiveField("destination");
+    fetchSuggestions(value);
+  };
+
+  const selectSuggestion = (suggestion) => {
+    if (activeField === "pickup") {
+      setPickup(suggestion.description);
+    } else if (activeField === "destination") {
+      setDestination(suggestion.description);
+    }
+    setSuggestions([]);
+    setPanelOpen(false);
   };
 
   useGSAP(
@@ -507,6 +182,51 @@ const Home = () => {
     }
   }, [waitingForDriverPanel]);
 
+  async function findTrip() {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/api/ride/fares`,
+        {
+          params: {
+            pickup,
+            destination,
+          },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+
+      // console.log(response.data)
+      setFare(response.data.data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  const createRide = async () => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/ride/create`,
+        {
+          userId: localStorage.getItem("userId"),
+          pickup,
+          destination,
+          // fare,
+          vehicleType,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error creating ride:", error);
+    }
+  };
+
   return (
     <div className="h-screen relative overflow-hidden bg-[#020617] text-white">
       {/* MAP */}
@@ -557,10 +277,10 @@ const Home = () => {
               <input
                 onClick={() => {
                   setPanelOpen(true);
-                  // setActiveField("pickup");
+                  setActiveField("pickup");
                 }}
-                // value={pickup}
-                // onChange={handlePickupChange}
+                value={pickup}
+                onChange={handlePickupChange}
                 className="w-full bg-white/10 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
                 placeholder="Add a pick-up location"
               />
@@ -575,10 +295,10 @@ const Home = () => {
               <input
                 onClick={() => {
                   setPanelOpen(true);
-                  // setActiveField("destination");
+                  setActiveField("destination");
                 }}
-                // value={destination}
-                // onChange={handleDestinationChange}
+                value={destination}
+                onChange={handleDestinationChange}
                 className="w-full bg-white/10 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
                 placeholder="Enter your destination"
               />
@@ -590,7 +310,11 @@ const Home = () => {
           </form>
 
           <button
-            // onClick={findTrip}
+            onClick={() => {
+              setPanelOpen(false);
+              setVehiclePanel(true);
+              findTrip();
+            }}
             className="w-full mt-4 bg-blue-500 hover:bg-blue-600 py-3 rounded-xl font-semibold transition"
           >
             Find Trip
@@ -603,22 +327,11 @@ const Home = () => {
           className="mt-2 max-w-xl mx-auto w-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden"
         >
           <LocationSearchPanel
+            suggestions={suggestions}
             setPanelOpen={setPanelOpen}
             setVehiclePanel={setVehiclePanel}
+            selectSuggestion={selectSuggestion}
           />
-          {/* <LocationSearchPanel
-            suggestions={
-              activeField === "pickup"
-                ? pickupSuggestions
-                : destinationSuggestions
-            } 
-            setPanelOpen={setPanelOpen}
-            setVehiclePanel={setVehiclePanel}
-            setPickup={setPickup}
-            setDestination={setDestination}
-            activeField={activeField}
-          />*/}
-          {/* <h1 className="text-2xl font-bold">Location Search Panel</h1> */}
         </div>
       </div>
 
@@ -637,6 +350,9 @@ const Home = () => {
           <VehiclePanel
             setConfirmRidePanel={setConfirmRidePanel}
             setVehiclePanel={setVehiclePanel}
+            fare={fare}
+            setVehicleType={setVehicleType}
+            // createRide={createRide}
           />
           {/* <h1 className="text-2xl font-bold">Vehicle Panel</h1> */}
         </div>
@@ -662,6 +378,11 @@ const Home = () => {
             setVehiclePanel={setVehiclePanel}
             setConfirmRidePanel={setConfirmRidePanel}
             setLookingForDriverPanel={setLookingForDriverPanel}
+            createRide={createRide}
+            pickup={pickup}
+            destination={destination}
+            fare={fare}
+            vehicleType={vehicleType}
           />
           {/* <h1 className="text-2xl font-bold">Confirm Ride</h1> */}
         </div>
@@ -684,6 +405,10 @@ const Home = () => {
 
           <LookingForDriver
             setLookingForDriverPanel={setLookingForDriverPanel}
+            pickup={pickup}
+            destination={destination}
+            fare={fare}
+            vehicleType={vehicleType}
           />
         </div>
       </div>
@@ -702,7 +427,9 @@ const Home = () => {
           />
         
         */}
-          <WaitingForDriver setWaitingForDriverPanel={setWaitingForDriverPanel} />
+          <WaitingForDriver
+            setWaitingForDriverPanel={setWaitingForDriverPanel}
+          />
         </div>
       </div>
     </div>

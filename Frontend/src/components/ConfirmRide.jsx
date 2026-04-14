@@ -42,7 +42,7 @@ const ConfirmRide = (props) => {
           <MapPin className="text-blue-400 mt-1" size={18} />
           <div>
             <h4 className="text-sm font-semibold text-medium">Pickup</h4>
-            <p className="text-xs text-white">Mantri Heights, Pune</p>
+            <p className="text-xs text-white">{props.pickup}</p>
           </div>
         </div>
 
@@ -51,7 +51,7 @@ const ConfirmRide = (props) => {
           <Navigation className="text-blue-400 mt-1" size={18} />
           <div>
             <h4 className="text-sm font-semibold">Destination</h4>
-            <p className="text-xs text-white">Dagdusheth Mandir, Pune</p>
+            <p className="text-xs text-white">{props.destination}</p>
           </div>
         </div>
 
@@ -59,7 +59,7 @@ const ConfirmRide = (props) => {
         <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
           <CreditCard className="text-blue-400 mt-1" size={18} />
           <div>
-            <h4 className="text-sm font-semibold">₹193</h4>
+            <h4 className="text-sm font-semibold">₹{props.fare[props.vehicleType] || 0}</h4>
             <p className="text-xs text-white">Cash Payment</p>
           </div>
         </div>
@@ -70,6 +70,7 @@ const ConfirmRide = (props) => {
         onClick={() => {
           props.setLookingForDriverPanel(true);
           props.setConfirmRidePanel(false);
+          props.createRide();
         }}
         className="w-full mt-6 bg-blue-500 hover:bg-blue-600 py-3 rounded-xl font-semibold transition"
       >
