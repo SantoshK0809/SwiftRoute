@@ -110,6 +110,7 @@ const RidePopUp = ({
   setConfirmRidePopupPanel,
   confirmRide,
   setCaptainDetailsPanel,
+  rideData,
 }) => {
   return (
     <div className="space-y-4 text-white">
@@ -140,11 +141,13 @@ const RidePopUp = ({
           </div>
 
           <h4 className="text-base text-gray-600 font-semibold">
-            Santosh Kirtane
+            {rideData ? rideData.userName : "Santosh Kirtane"}
           </h4>
         </div>
 
-        <span className="text-sm text-gray-500 font-medium">2.2 KM</span>
+        <span className="text-sm text-gray-500 font-medium">
+          {rideData ? `${rideData.distance}` : "2.2 KM"}
+        </span>
       </div>
 
       {/* ROUTE DETAILS */}
@@ -157,7 +160,9 @@ const RidePopUp = ({
           <MapPin className="text-green-400 mt-1" size={18} />
           <div>
             <h4 className="text-base text-gray-600 font-semibold">Pickup</h4>
-            <p className="text-sm text-gray-500">562/11-A, Main Road</p>
+            <p className="text-sm text-gray-500">
+              {rideData ? rideData.pickup : "562/11-A, Main Road"}
+            </p>
           </div>
         </div>
 
@@ -171,7 +176,9 @@ const RidePopUp = ({
             <h4 className="text-base text-gray-600 font-semibold">
               Destination
             </h4>
-            <p className="text-sm text-gray-500">Third Wave Coffee</p>
+            <p className="text-sm text-gray-500">
+              {rideData ? rideData.destination : "Third Wave Coffee"}
+            </p>
           </div>
         </div>
 
@@ -182,7 +189,9 @@ const RidePopUp = ({
         >
           <Banknote className="text-blue-400 mt-1" size={18} />
           <div>
-            <h4 className="text-base text-gray-600 font-semibold">₹193.20</h4>
+            <h4 className="text-base text-gray-600 font-semibold">
+              ₹{rideData ? rideData.fare : "193.20"}
+            </h4>
             <p className="text-sm text-gray-500">Cash Payment</p>
           </div>
         </div>

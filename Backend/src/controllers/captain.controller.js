@@ -40,7 +40,7 @@ async function handleRegisterCaptian(req, res) {
     res.status(201).json({
       message: "Captain registered successfully.",
       token,
-      newCaptain: {
+      captain: {
         _id: newCaptain._id,
         fullname: newCaptain.fullname,
         email: newCaptain.email,
@@ -84,9 +84,15 @@ async function handleLoginCaptain(req, res) {
     res.status(200).json({
       message: "Captain loggedIn successfully",
       token,
+      captain: {
+        _id: captain._id,
+        fullname: captain.fullname,
+        email: captain.email,
+        vehicle: captain.vehicle,
+      },
     });
   } catch (err) {
-    console.log(`Failed in login captian. Error message ${err.message}`);
+    // console.log(`Failed in login captian. Error message ${err.message}`);
     return res.status(500).json({ message: "Internal server error." });
   }
 }

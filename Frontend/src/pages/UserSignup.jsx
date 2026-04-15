@@ -38,6 +38,9 @@ const UserSignup = () => {
         const data = res.data;
         setUser(data.user);
         localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("userId", data.user._id);
+        localStorage.setItem("userRole", "user");
         navigate("/user-login");
       }
     } catch (err) {

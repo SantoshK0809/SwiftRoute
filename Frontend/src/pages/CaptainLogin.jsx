@@ -27,13 +27,26 @@ const CaptainLogin = () => {
         `${import.meta.env.VITE_BASE_URL}/api/captain/login`,
         captain,
       );
-      console.log(res.data);
+      console.log("Captain login response:", res.data);
       const data = res.data;
+      
+      // Validate response
+      if (!data.captain || !data.captain._id) {
+        console.error("Invalid captain response:", data);
+        alert("Login failed: Invalid response from server");
+        return;
+      }
+      
       setCaptain(data.captain);
       localStorage.setItem("token", data.token);
+      localStorage.setItem("captain", JSON.stringify(data.captain));
+      localStorage.setItem("userId", data.captain._id);
+      localStorage.setItem("userRole", "captain");
       navigate("/captain-home");
     } catch (err) {
-      console.log(err.response?.data || err.message);
+      const errorMsg = err.response?.data?.message || err.message || "Login failed";
+      console.log("Captain login error:", errorMsg);
+      alert(`Error: ${errorMsg}`);
     }
     setEmail("");
     setPassword("");

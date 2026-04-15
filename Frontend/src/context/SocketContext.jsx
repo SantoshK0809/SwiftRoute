@@ -20,6 +20,34 @@ const SocketContext = ({ children }) => {
 
     socketClient.on("connect", () => {
       console.log("Socket connected:", socketClient.id);
+      
+      // Try to get userId from localStorage first
+      let userId = localStorage.getItem("userId");
+      let userType = localStorage.getItem("userRole");
+      
+      // If not in localStorage, try to decode from JWT token
+      if (!userId) {
+        const token = localStorage.getItem("token");
+        if (token) {
+          try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            userId = payload._id;
+            userType = "user"; // Assume user for now, can be extended for captain
+            console.log("Decoded userId from token:", userId);
+          } catch (err) {
+            console.error("Failed to decode token:", err);
+          }
+        }
+      }
+      
+      if (userId && userType) {
+        console.log("About to emit join with:", { userId, userType });
+        socketClient.emit("join", { userType, userId });
+        console.log("Socket join emitted:", { userId, userType });
+      } else {
+        console.log("Socket connected, but no userId/userType available for join.");
+      }
+      
       setConnected(true);
     });
 
@@ -82,7 +110,7 @@ const SocketContext = ({ children }) => {
   );
 
   return (
-    <SocketDataContext.Provider value={{connected, socket, sendMessageToEvent, subscribeToEvent}}>
+    <SocketDataContext.Provider value={value}>
       {children}
     </SocketDataContext.Provider>
   );

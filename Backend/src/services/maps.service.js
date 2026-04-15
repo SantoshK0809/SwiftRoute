@@ -1,4 +1,5 @@
 const axios = require("axios");
+const Captain = require("../models/captain.model");
 
 module.exports.getAddressCoordinate = async (address) => {
   const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json`;
@@ -15,7 +16,7 @@ module.exports.getAddressCoordinate = async (address) => {
       const [longitude, latitude] = response.data.features[0].center;
       return {
         ltd: latitude,
-        lang: longitude,
+        lng: longitude,
       };
     } else {
       throw new Error("Unable to fetch coordinates for the given address");
@@ -42,8 +43,8 @@ module.exports.getDistanceAndTime = async (pickup, destination) => {
   }
 
   // Now format the coordinates precisely as longitude,latitude
-  const formattedPickup = `${pickupCoords.lang},${pickupCoords.ltd}`;
-  const formattedDest = `${destCoords.lang},${destCoords.ltd}`;
+  const formattedPickup = `${pickupCoords.lng},${pickupCoords.ltd}`;
+  const formattedDest = `${destCoords.lng},${destCoords.ltd}`;
 
   // Pass the formatted coordinates to the directions API
   const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${formattedPickup};${formattedDest}`;
@@ -142,7 +143,7 @@ module.exports.getAutoCompleteSuggestions = async (address) => {
           })),
           location: {
             ltd: feature.center[1],
-            lang: feature.center[0],
+            lng: feature.center[0],
           },
         };
       });
@@ -151,6 +152,27 @@ module.exports.getAutoCompleteSuggestions = async (address) => {
     }
   } catch (error) {
     console.error(error);
+    throw error;
+  }
+};
+
+
+module.exports.getCaptainsInTheRadius = async (ltd, lng, radius) => {
+  try {
+    const captains = await Captain.find({
+      location: {
+        $near: {
+          $geometry: {
+            type: "Point",
+            coordinates: [lng, ltd], // [longitude, latitude]
+          },
+          $maxDistance: radius * 1000, // Convert km to meters
+        },
+      },
+    });
+    return captains;
+  } catch (error) {
+    console.error("Error finding captains in radius:", error);
     throw error;
   }
 };

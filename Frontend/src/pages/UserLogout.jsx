@@ -21,6 +21,9 @@ const UserLogout = () => {
           if (res.status === 200) {
             setUser(null);
             localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            localStorage.removeItem("userId");
+            localStorage.removeItem("userRole");
             navigate("/user-login");
           }
         })
