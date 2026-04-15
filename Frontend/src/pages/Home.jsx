@@ -47,15 +47,27 @@ const Home = () => {
   const lookingForDriverPanelRef = useRef(null);
   const waitingForDriverRef = useRef(null);
 
-  const { sendMessageToEvent, subscribeToEvent } = useContext(SocketDataContext);
+  const { socket, connected } = useContext(SocketDataContext);
   const { user } = useContext(UserDataContext);
 
   useEffect(() => {
-    
-    console.log(user)
-    sendMessageToEvent("join", { userType: "user", userId: user?._id });
-    
-  }, [user])
+    const storedUserId = localStorage.getItem("userId");
+    const userId = user?._id || storedUserId;
+
+    if (socket && connected && userId) {
+      console.log("Emitting join event with userId:", userId, "user:", user);
+      socket.emit("join", { userType: "user", userId });
+    } else {
+      console.log(
+        "Socket join not emitted - socket:",
+        !!socket,
+        "connected:",
+        connected,
+        "userId:",
+        userId,
+      );
+    }
+  }, [socket, connected, user]);
   
 
   const submitHandler = (e) => {

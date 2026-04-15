@@ -23,11 +23,14 @@ const CaptainLogout = () => {
             console.log(res.data);
             setCaptain(null);
             localStorage.removeItem("token");
+            localStorage.removeItem("captain");
+            localStorage.removeItem("userId");
+            localStorage.removeItem("userRole");
             navigate("/captain-login");
           }
         })
         .catch((err) => {
-          console.log(err?.response?.data?.message || "Something went wrong");
+          console.log("Captain logout error:", err?.response?.data?.message || "Something went wrong");
         });
     };
 

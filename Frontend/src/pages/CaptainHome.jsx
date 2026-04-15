@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Navigation, LogOut, ChevronUp } from "lucide-react";
 import CaptainDetails from "../components/CaptainDetails";
@@ -7,15 +7,110 @@ import ConfirmRidePopUp from "../components/ConfirmRidePopUp";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import LoginNavbar from "../components/LoginNavbar";
+import { SocketDataContext } from "../context/SocketContext";
+import { CaptainDataContext } from "../context/CaptainContext";
 
 const CaptainHome = () => {
   const [ridePopupPanel, setRidePopupPanel] = useState(false);
   const [confirmRidePopupPanel, setConfirmRidePopupPanel] = useState(false);
   const [captainDetailsPanel, setCaptainDetailsPanel] = useState(true);
+  const [rideData, setRideData] = useState(null);
 
   const captainDetailsRef = useRef(null);
   const ridePopupRef = useRef(null);
   const confirmRidePopupRef = useRef(null);
+
+  const { socket, connected } = useContext(SocketDataContext);
+  const {captain} = useContext(CaptainDataContext);
+
+  useEffect(() => {
+      const storedUserId = localStorage.getItem("userId");
+      const userId = captain?._id || storedUserId;
+  
+      if (socket && connected && userId) {
+        console.log("Emitting join event with userId:", userId, "user:", captain);
+        socket.emit("join", { userType: "captain", userId });
+      } else {
+        console.log(
+          "Socket join not emitted - socket:",
+          !!socket,
+          "connected:",
+          connected,
+          "userId:",
+          userId,
+        );
+      }
+    }, [socket, connected, captain]);
+
+  // Listen for new ride requests
+  // useEffect(() => {
+  //   if (!socket) return;
+
+  //   const handleNewRide = (data) => {
+  //     console.log("New ride request received:", data);
+  //     setRideData(data);
+  //     setRidePopupPanel(true);
+  //     setCaptainDetailsPanel(false);
+  //   };
+
+  //   socket.on("new-ride", handleNewRide);
+
+  //   return () => {
+  //     socket.off("new-ride", handleNewRide);
+  //   };
+  // }, [socket]);
+
+  socket?.on("new-ride", (data) => {
+    console.log("New ride request received:", data);
+    setRideData(data);
+    setRidePopupPanel(true);
+    setCaptainDetailsPanel(false);
+  });
+
+  // Location update interval
+  useEffect(() => {
+    if (!socket || !connected || !captain?._id) return;
+
+    const updateLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            socket.emit("update-location-captain", {
+              userId: captain._id,
+              userType: "captain",
+              location: {
+                ltd: latitude,
+                lng: longitude,
+              },
+            });
+            console.log("Location updated:", { latitude, longitude });
+          },
+          (error) => {
+            console.error("Error getting location:", error);
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0,
+          }
+        );
+      } else {
+        console.error("Geolocation is not supported by this browser.");
+      }
+    };
+
+    // Update location immediately
+    updateLocation();
+
+    // Set interval to update every 10 seconds
+    const intervalId = setInterval(updateLocation, 10000);
+
+    // return () => {
+    //   clearInterval(intervalId);
+    // };
+  }, [socket, connected, captain]);
+
 
   useGSAP(() => {
     if (captainDetailsPanel) {
@@ -102,6 +197,7 @@ const CaptainHome = () => {
               setRidePopupPanel(false);
               setConfirmRidePopupPanel(true);
             }}
+            rideData={rideData}
           />
         </div>
       </div>

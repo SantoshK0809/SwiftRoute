@@ -46,12 +46,25 @@ const CaptainSignup = () => {
       console.log(`Captain Data -> ${res.data}`);
       if (res.status === 201) {
         const data = res.data;
+        
+        // Validate response
+        if (!data.captain || !data.captain._id) {
+          console.error("Invalid captain response:", data);
+          alert("Signup failed: Invalid response from server");
+          return;
+        }
+        
         localStorage.setItem("token", data.token);
+        localStorage.setItem("captain", JSON.stringify(data.captain));
+        localStorage.setItem("userId", data.captain._id);
+        localStorage.setItem("userRole", "captain");
         setCaptain(data.captain);
         navigate("/captain-login");
       }
     } catch (err) {
-      console.log(err.response?.message);
+      const errorMsg = err.response?.data?.message || err.message || "Signup failed";
+      console.log("Captain signup error:", errorMsg);
+      alert(`Error: ${errorMsg}`);
     }
 
     setFirstName("");
