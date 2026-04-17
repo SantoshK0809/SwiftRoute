@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Navigation, LogOut, ChevronUp } from "lucide-react";
+import axios from "axios";
 import CaptainDetails from "../components/CaptainDetails";
 import RidePopUp from "../components/RidePopUp";
 import ConfirmRidePopUp from "../components/ConfirmRidePopUp";
@@ -9,6 +10,7 @@ import gsap from "gsap";
 import LoginNavbar from "../components/LoginNavbar";
 import { SocketDataContext } from "../context/SocketContext";
 import { CaptainDataContext } from "../context/CaptainContext";
+import LiveTracking from "../components/LiveTracking";
 
 const CaptainHome = () => {
   const [ridePopupPanel, setRidePopupPanel] = useState(false);
@@ -21,26 +23,26 @@ const CaptainHome = () => {
   const confirmRidePopupRef = useRef(null);
 
   const { socket, connected } = useContext(SocketDataContext);
-  const {captain} = useContext(CaptainDataContext);
+  const { captain } = useContext(CaptainDataContext);
 
   useEffect(() => {
-      const storedUserId = localStorage.getItem("userId");
-      const userId = captain?._id || storedUserId;
-  
-      if (socket && connected && userId) {
-        console.log("Emitting join event with userId:", userId, "user:", captain);
-        socket.emit("join", { userType: "captain", userId });
-      } else {
-        console.log(
-          "Socket join not emitted - socket:",
-          !!socket,
-          "connected:",
-          connected,
-          "userId:",
-          userId,
-        );
-      }
-    }, [socket, connected, captain]);
+    const storedUserId = localStorage.getItem("userId");
+    const userId = captain?._id || storedUserId;
+
+    if (socket && connected && userId) {
+      console.log("Emitting join event with userId:", userId, "user:", captain);
+      socket.emit("join", { userType: "captain", userId });
+    } else {
+      console.log(
+        "Socket join not emitted - socket:",
+        !!socket,
+        "connected:",
+        connected,
+        "userId:",
+        userId,
+      );
+    }
+  }, [socket, connected, captain]);
 
   // Listen for new ride requests
   // useEffect(() => {
@@ -66,6 +68,26 @@ const CaptainHome = () => {
     setRidePopupPanel(true);
     setCaptainDetailsPanel(false);
   });
+
+  async function confirmRide() {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/ride/confirm`,
+        {
+          rideId: rideData.rideId,
+          captainId: captain._id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.log(error.response?.data?.message || error.message);
+    }
+  }
 
   // Location update interval
   useEffect(() => {
@@ -93,7 +115,7 @@ const CaptainHome = () => {
             enableHighAccuracy: true,
             timeout: 5000,
             maximumAge: 0,
-          }
+          },
         );
       } else {
         console.error("Geolocation is not supported by this browser.");
@@ -110,7 +132,6 @@ const CaptainHome = () => {
     //   clearInterval(intervalId);
     // };
   }, [socket, connected, captain]);
-
 
   useGSAP(() => {
     if (captainDetailsPanel) {
@@ -129,15 +150,16 @@ const CaptainHome = () => {
   }, [captainDetailsPanel]);
 
   return (
-    <div className="h-screen w-full relative bg-background text-foreground overflow-hidden">
+    <div className="h-screen w-full relative bg-[#020617] bg-background text-foreground overflow-hidden">
       {/* MAP AREA */}
-      <div className="absolute inset-0">
-        <img
+      <div className="absolute inset-0" style={{ touchAction: "none" }}>
+        {/* <img
           className="h-full w-full object-cover opacity-60"
           src="https://miro.medium.com/v2/resize:fit:1400/0*gwMx05pqII5hbfmX.gif"
           alt="map"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-transparent to-background" />
+        /> */}
+        <LiveTracking role="captain" />
+        {/* <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-transparent to-background" /> */}
       </div>
 
       {/* TOP BAR */}
@@ -193,10 +215,11 @@ const CaptainHome = () => {
             setRidePopupPanel={setRidePopupPanel}
             setConfirmRidePopupPanel={setConfirmRidePopupPanel}
             setCaptainDetailsPanel={setCaptainDetailsPanel}
-            confirmRide={() => {
+            confirmRidePanelSet={() => {
               setRidePopupPanel(false);
               setConfirmRidePopupPanel(true);
             }}
+            confirmRide={confirmRide}
             rideData={rideData}
           />
         </div>
@@ -214,6 +237,7 @@ const CaptainHome = () => {
             setConfirmRidePopupPanel={setConfirmRidePopupPanel}
             setRidePopupPanel={setRidePopupPanel}
             setCaptainDetailsPanel={setCaptainDetailsPanel}
+            ride={rideData}
           />
         </div>
       </div>
@@ -230,8 +254,8 @@ const CaptainHome = () => {
           }}
           className="glass rounded-lg px-3 py-2 text-base cursor-pointer font-medium text-foreground hover:bg-secondary transition"
         >
-          <ChevronUp className=" inline mr-1" size={22}/>
-          Test Ride 
+          <ChevronUp className=" inline mr-1" size={22} />
+          Test Ride
         </button>
       </div>
     </div>

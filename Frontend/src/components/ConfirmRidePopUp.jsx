@@ -7,14 +7,46 @@ import {
   User,
   ShieldCheck,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const ConfirmRidePopUp = ({
   setConfirmRidePopupPanel,
   setRidePopupPanel,
   setCaptainDetailsPanel,
+  ride,
 }) => {
   const [otp, setOtp] = useState("");
+  const navigate = useNavigate();
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/api/ride/start-ride`,
+        {
+          params: {
+            rideId: ride._id || ride.rideId,
+            otp: otp,
+          },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setConfirmRidePopupPanel(false);
+        setRidePopupPanel(false);
+        navigate("/captain-riding", { state: { ride: ride } });
+      }
+    } catch (error) {
+      console.log(error.response?.data?.message || "An error occurred");
+    }
+  };
+
+  console.log("This is the ride data for captain -> ", ride);
 
   return (
     <div className="h-full flex flex-col">
@@ -41,11 +73,11 @@ const ConfirmRidePopUp = ({
             <User className="h-5 w-5 text-muted-foreground" />
           </div>
           <h4 className="text-base font-semibold text-foreground capitalize">
-            Rider Name
+            {ride?.userName}
           </h4>
         </div>
         <span className="text-sm font-medium text-muted-foreground">
-          2.2 KM
+          {ride?.distance}
         </span>
       </div>
 
@@ -58,7 +90,7 @@ const ConfirmRidePopUp = ({
           <div>
             <h4 className="text-sm font-semibold text-foreground">Pickup</h4>
             <p className="text-xs text-muted-foreground mt-0.5">
-              562/11-A, Main Road
+              {ride?.pickup}
             </p>
           </div>
         </div>
@@ -71,7 +103,7 @@ const ConfirmRidePopUp = ({
               Destination
             </h4>
             <p className="text-xs text-muted-foreground mt-0.5">
-              Third Wave Coffee, Koramangala
+              {ride?.destination}
             </p>
           </div>
         </div>
@@ -80,7 +112,9 @@ const ConfirmRidePopUp = ({
             <Banknote className="h-4 w-4 text-primary" />
           </div>
           <div>
-            <h4 className="text-sm font-semibold text-foreground">₹193.20</h4>
+            <h4 className="text-sm font-semibold text-foreground">
+              ₹{ride?.fare}
+            </h4>
             <p className="text-xs text-muted-foreground mt-0.5">Cash Payment</p>
           </div>
         </div>
@@ -99,12 +133,12 @@ const ConfirmRidePopUp = ({
             placeholder="Enter OTP"
           />
         </div>
-        <Link
-          to={"/captain-riding"}
+        <button
+          onClick={submitHandler}
           className="w-full py-3.5 rounded-xl flex items-center justify-center font-semibold text-sm bg-green-500 text-white hover:bg-green-600 transition shadow-[0_0_20px_rgba(34,197,94,0.3)]"
         >
           Confirm & Start Ride
-        </Link>
+        </button>
         <button
           onClick={() => {
             setConfirmRidePopupPanel(false);

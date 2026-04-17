@@ -2,6 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import {
   Navigation,
   MapPin,
@@ -24,8 +25,10 @@ import WaitingForDriver from "../components/WaitingForDriver";
 import { SocketDataContext } from "../context/SocketContext";
 import { Socket } from "socket.io-client";
 import { UserDataContext } from "../context/UserContext";
+import LiveTracking from "../components/LiveTracking";
 
 const Home = () => {
+  const navigate = useNavigate();
   const [pickup, setPickup] = useState("");
   const [destination, setDestination] = useState("");
   const [vehicleType, setVehicleType] = useState(null);
@@ -69,6 +72,20 @@ const Home = () => {
     }
   }, [socket, connected, user]);
   
+  useEffect(() => {
+    socket.on("ride-confirmed", (data) => {
+      console.log("Ride confirmed:", data);
+      setRide(data);
+      setWaitingForDriverPanel(true);
+      setLookingForDriverPanel(false);
+    });
+
+    socket.on("ride-started", (data) => {
+      console.log("Ride started:", data);
+      setWaitingForDriverPanel(false);
+      navigate("/riding", { state: { ride: data } });
+    });
+  }, [socket, navigate]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -242,32 +259,30 @@ const Home = () => {
   return (
     <div className="h-screen relative overflow-hidden bg-[#020617] text-white">
       {/* MAP */}
-      <div className="absolute inset-0">
-        <img
+      <div className="absolute inset-0" style={{ touchAction: "none" }}>
+        {/* <img
           src="https://tse2.mm.bing.net/th/id/OIP.CdPGs2UrpqjBv7cg9JrLTwHaLx?pid=ImgDet&w=198&h=315&c=7&dpr=2&o=7&rm=3"
           alt="map"
           className="w-full h-full object-cover opacity-70"
-        />
+        /> */}
 
-        {/* <LiveTracking /> */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/60"></div>
+        <LiveTracking role="user" />
+
+       
+        {/* <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/60"></div> */}
       </div>
 
       {/* LOGO */}
-      {/* <div className="absolute top-5 left-5 z-20 flex items-center gap-2">
-        <Navigation className="text-blue-400" />
-        <span className="font-bold">SwiftRoute</span>
-      </div> */}
       <LoginNavbar />
 
       {/* MAIN SEARCH */}
-      <div className="flex flex-col justify-end mt-10 h-screen absolute top-0 w-full z-20 px-4 pb-6">
+      <div className="flex flex-col justify-end mt-10 text-gray-600 h-screen absolute top-0 w-full z-20 px-4 pb-6">
         <div className="max-w-xl mx-auto w-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5 relative">
           {/* Close button */}
           <h5
             ref={panelCloseRef}
             onClick={() => setPanelOpen(false)}
-            className="absolute opacity-0 right-12 text-white top-4 text-xl cursor-pointer text-gray-300"
+            className="absolute opacity-0 right-12 text-gray-700 top-4 text-xl cursor-pointer text-gray-300"
           >
             <ChevronDown size={22} />
           </h5>
@@ -395,6 +410,7 @@ const Home = () => {
             destination={destination}
             fare={fare}
             vehicleType={vehicleType}
+            ride={ride}
           />
           {/* <h1 className="text-2xl font-bold">Confirm Ride</h1> */}
         </div>
@@ -441,6 +457,10 @@ const Home = () => {
         */}
           <WaitingForDriver
             setWaitingForDriverPanel={setWaitingForDriverPanel}
+            ride={ride}
+            confirmRidePanel={setConfirmRidePanel}
+            setWaitingForDriver={setWaitingForDriverPanel}
+            waitingForDriver={waitingForDriverPanel}
           />
         </div>
       </div>
