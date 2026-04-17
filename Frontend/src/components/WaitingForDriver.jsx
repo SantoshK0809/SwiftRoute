@@ -27,14 +27,21 @@ const WaitingForDriver = (props) => {
         />
 
         <div className="text-right">
-          <h2 className="text-sm font-semibold">Rahul Sharma</h2>
-          <h4 className="text-lg font-bold tracking-wide">MH12 AB 1234</h4>
-          <p className="text-xs text-gray-400">Maruti Suzuki Alto</p>
+          <h2 className="text-sm font-semibold capitalize">
+            {props.ride?.captainId?.fullname.firstname}{" "}
+            {props.ride?.captainId?.fullname.lastname}
+          </h2>
+          <h4 className="text-lg font-bold tracking-wide">
+            {props.ride?.captainId?.vehicle?.plate}
+          </h4>
+          <p className="text-xs text-gray-400 capitalize">
+            {props.ride?.captainId?.vehicle?.vehicleType}
+          </p>
 
           {/* OTP (highlighted) */}
           <div className="mt-2 inline-block px-3 py-1 rounded-lg bg-blue-500/20 border border-blue-400/30">
             <span className="text-lg font-bold tracking-widest text-blue-400">
-              4821
+              {props.ride?.otp}
             </span>
           </div>
         </div>
@@ -47,7 +54,7 @@ const WaitingForDriver = (props) => {
           <MapPin className="text-blue-400 mt-1" size={18} />
           <div>
             <h4 className="text-sm font-semibold">Pickup</h4>
-            <p className="text-xs text-gray-400">Mantri Heights, Pune</p>
+            <p className="text-xs text-gray-400">{props.ride?.pickup}</p>
           </div>
         </div>
 
@@ -56,7 +63,7 @@ const WaitingForDriver = (props) => {
           <Navigation className="text-blue-400 mt-1" size={18} />
           <div>
             <h4 className="text-sm font-semibold">Destination</h4>
-            <p className="text-xs text-gray-400">Dagdusheth Mandir, Pune</p>
+            <p className="text-xs text-gray-400">{props.ride?.destination}</p>
           </div>
         </div>
 
@@ -64,7 +71,7 @@ const WaitingForDriver = (props) => {
         <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
           <CreditCard className="text-blue-400 mt-1" size={18} />
           <div>
-            <h4 className="text-sm font-semibold">₹193</h4>
+            <h4 className="text-sm font-semibold">{props.ride?.fare}</h4>
             <p className="text-xs text-gray-400">Cash Payment</p>
           </div>
         </div>

@@ -7,8 +7,35 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const FinishRide = (props) => {
+  console.log(`This is the finish ride data -> ${JSON.stringify(props.ride)}`);
+  const navigate = useNavigate();
+
+  async function endRide() {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/ride/end-ride`,
+        {
+          rideId: props.ride?._id || props.ride?.rideId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+      console.log(response.data.message);
+      if (response.data.success) {
+        alert("Ride ended successfully");
+      }
+      navigate("/captain-home");
+    } catch (error) {
+      console.log(error.response.data.message);
+    }
+  }
   return (
     <div className="text-white">
       {/* HANDLE */}
@@ -44,14 +71,16 @@ const FinishRide = (props) => {
           />
 
           <div>
-            <h4 className="text-base text-gray-500 font-semibold">
-              Rider Name
+            <p className="text-sm text-gray-400 capitalize">Passenger</p>
+            <h4 className="text-base text-gray-500 font-semibold capitalize">
+              {props.ride?.userName}
             </h4>
-            <p className="text-sm text-gray-400">Passenger</p>
           </div>
         </div>
 
-        <span className="text-sm font-semibold text-gray-400">2.2 KM</span>
+        <span className="text-sm font-semibold text-gray-400">
+          {props.ride?.distance || "2.2 KM"}
+        </span>
       </div>
 
       {/* DETAILS */}
@@ -64,7 +93,7 @@ const FinishRide = (props) => {
           <MapPin className="text-blue-400 mt-1" size={18} />
           <div>
             <h4 className="text-base text-gray-500 font-semibold">Pickup</h4>
-            <p className="text-sm text-gray-400">Mantri Heights, Pune</p>
+            <p className="text-sm text-gray-400">{props.ride?.pickup}</p>
           </div>
         </div>
 
@@ -78,7 +107,7 @@ const FinishRide = (props) => {
             <h4 className="text-base text-gray-500 font-semibold">
               Destination
             </h4>
-            <p className="text-sm text-gray-400">Dagdusheth Mandir, Pune</p>
+            <p className="text-sm text-gray-400">{props.ride?.destination}</p>
           </div>
         </div>
 
@@ -89,23 +118,25 @@ const FinishRide = (props) => {
         >
           <CreditCard className="text-blue-400 mt-1" size={18} />
           <div>
-            <h4 className="text-base text-gray-500 font-semibold">₹193</h4>
+            <h4 className="text-base text-gray-500 font-semibold">
+              ₹{props.ride?.fare}
+            </h4>
             <p className="text-sm text-gray-400">Cash Payment</p>
           </div>
         </div>
       </div>
 
       {/* BUTTON */}
-      <Link
-        to={"/captain-home"}
+      <button
         onClick={() => {
           props.setFinishRidePanel(false);
+          endRide();
         }}
         className="flex items-center justify-center w-full mt-6 bg-blue-500 hover:bg-blue-600 
                    py-3 rounded-xl font-semibold transition"
       >
         Finish Ride
-      </Link>
+      </button>
       <p className="text-center text-red-500 text-sm mt-4">
         Click on Finish Ride button to end the ride after completion of the
         payment

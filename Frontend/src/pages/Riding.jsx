@@ -1,21 +1,25 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useContext } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { MapPin, CreditCard, Navigation } from "lucide-react";
 import LoginNavbar from "../components/LoginNavbar";
-// import LiveTracking from "../components/LiveTracking";
+import LiveTracking from "../components/LiveTracking";
+import { SocketDataContext } from "../context/SocketContext";
 
 const Riding = () => {
+  const location = useLocation();
+  const ride = location.state?.ride;
+  const { socket } = useContext(SocketDataContext);
+  const navigate = useNavigate();
+
+  socket.on("ride-ended", () => {
+    navigate("/home");
+  });
+
   return (
     <div className="h-screen w-full bg-[#020617] text-white relative overflow-hidden">
       {/* MAP */}
-      <div className="h-[55%] lg:h-screen relative">
-        {/* <LiveTracking /> */}
-        <img
-          src="https://tse2.mm.bing.net/th/id/OIP.CdPGs2UrpqjBv7cg9JrLTwHaLx?pid=ImgDet&w=198&h=315&c=7&dpr=2&o=7&rm=3"
-          alt="map"
-          className="w-full h-full object-cover opacity-70"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/70"></div>
+      <div className="h-screen relative" style={{ touchAction: "none" }}>
+        <LiveTracking ride={ride} role="user" />
       </div>
 
       {/* HOME BUTTON */}
@@ -42,9 +46,16 @@ const Riding = () => {
             />
 
             <div className="text-right">
-              <h2 className="text-sm font-semibold">Rahul Sharma</h2>
-              <h4 className="text-lg font-bold tracking-wide">MH12 AB 1234</h4>
-              <p className="text-xs text-gray-400">Maruti Suzuki Alto</p>
+              <h2 className="text-sm font-semibold capitalize">
+                {ride?.captainId?.fullname?.firstname}{" "}
+                {ride?.captainId?.fullname?.lastname}
+              </h2>
+              <h4 className="text-lg font-bold tracking-wide">
+                {ride?.captainId?.vehicle?.plate}
+              </h4>
+              <p className="text-xs text-gray-400 capitalize">
+                {ride?.captainId?.vehicle?.model}
+              </p>
             </div>
           </div>
 
@@ -55,7 +66,7 @@ const Riding = () => {
               <MapPin className="text-blue-400 mt-1" size={18} />
               <div>
                 <h4 className="text-sm font-semibold">Destination</h4>
-                <p className="text-xs text-gray-400">Dagdusheth Mandir, Pune</p>
+                <p className="text-xs text-gray-400">{ride?.destination}</p>
               </div>
             </div>
 
@@ -63,7 +74,7 @@ const Riding = () => {
             <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
               <CreditCard className="text-blue-400 mt-1" size={18} />
               <div>
-                <h4 className="text-sm font-semibold">₹193</h4>
+                <h4 className="text-sm font-semibold">₹{ride?.fare}</h4>
                 <p className="text-xs text-gray-400">Cash Payment</p>
               </div>
             </div>

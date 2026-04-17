@@ -1,9 +1,8 @@
 import React, { useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-//import FinishRide from "../components/FinishRide";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-//import LiveTracking from "../components/LiveTracking";
+import LiveTracking from "../components/LiveTracking";
 import { Navigation, LogOut } from "lucide-react";
 import FinishRide from "../components/FinishRide";
 
@@ -49,14 +48,9 @@ const CaptainRiding = () => {
   return (
     <div className="h-screen relative  text-white overflow-hidden">
       {/* MAP */}
-      <div className="absolute inset-0 z-0">
-        {/* <LiveTracking /> */}
-        <img
-          className="h-full w-full object-cover opacity-60"
-          src="https://miro.medium.com/v2/resize:fit:1400/0*gwMx05pqII5hbfmX.gif"
-          alt="map"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-transparent to-background"></div>
+      <div className="absolute inset-0 z-0" style={{ touchAction: "none" }}>
+        <LiveTracking ride={rideData} role="captain" />
+        {/* <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-transparent to-background"></div> */}
       </div>
 
       {/* TOP BAR */}
@@ -89,7 +83,7 @@ const CaptainRiding = () => {
             {/* DISTANCE */}
             <div>
               <p className="text-xs text-gray-400">Distance to drop</p>
-              <h4 className="text-lg text-gray-500 font-semibold">4 KM away</h4>
+              <h4 className="text-lg text-gray-500 font-semibold">{rideData?.distance || "4 KM"} away</h4>
             </div>
 
             {/* BUTTON */}
@@ -114,6 +108,7 @@ const CaptainRiding = () => {
         <div className="max-w-xl mx-auto bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5">
           {/* <FinishRide ride={rideData} setFinishRidePanel={setFinishRidePanel} /> */}
           <FinishRide
+            ride={rideData}
             setFinishRidePanel={setFinishRidePanel}
             setCompleteRidePanel={setCompleteRidePanel}
           />
