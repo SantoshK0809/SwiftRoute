@@ -259,17 +259,10 @@ const Home = () => {
   return (
     <div className="h-screen relative overflow-hidden bg-[#020617] text-white">
       {/* MAP */}
-      <div className="absolute inset-0" style={{ touchAction: "none" }}>
-        {/* <img
-          src="https://tse2.mm.bing.net/th/id/OIP.CdPGs2UrpqjBv7cg9JrLTwHaLx?pid=ImgDet&w=198&h=315&c=7&dpr=2&o=7&rm=3"
-          alt="map"
-          className="w-full h-full object-cover opacity-70"
-        /> */}
+      <div className="absolute inset-0" style={{ touchAction: "none" }}> 
 
         <LiveTracking role="user" />
-
-       
-        {/* <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/60"></div> */}
+        
       </div>
 
       {/* LOGO */}
@@ -342,7 +335,7 @@ const Home = () => {
               setVehiclePanel(true);
               findTrip();
             }}
-            className="w-full mt-4 bg-blue-500 hover:bg-blue-600 py-3 rounded-xl font-semibold transition"
+            className="w-full mt-4 bg-blue-500 hover:bg-blue-600 py-3 text-white rounded-xl font-semibold transition"
           >
             Find Trip
           </button>

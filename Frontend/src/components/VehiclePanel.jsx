@@ -3,7 +3,7 @@ import { User, ChevronDown } from "lucide-react";
 
 const VehiclePanel = (props) => {
   return (
-    <div className="text-white">
+    <div className="text-gray-700">
       {/* HANDLE */}
       <div className="flex justify-center mb-4">
         <div className="w-10 h-1 bg-white/20 rounded-full"></div>
@@ -14,7 +14,7 @@ const VehiclePanel = (props) => {
           props.setVehiclePanel(false);
         }}
       >
-        <ChevronDown className="text-white" size={20} />
+        <ChevronDown className="text-gray-500" size={20} />
       </h5>
       {/* TITLE */}
       <h3 className="text-xl sm:text-2xl font-semibold mb-5 text-center">
@@ -29,7 +29,7 @@ const VehiclePanel = (props) => {
           props.setVehicleType('car');
         }}
         className="flex items-center justify-between p-4 mb-3 rounded-2xl 
-                      bg-white/5 border border-white/10 hover:bg-white/10 transition cursor-pointer"
+                      bg-white/5 border border-blue-400/30 hover:bg-blue-400/10 transition cursor-pointer"
       >
         <img
           className="h-10 object-contain"
@@ -40,13 +40,13 @@ const VehiclePanel = (props) => {
         <div className="flex-1 mx-3">
           <h4 className="text-sm font-semibold flex items-center gap-2">
             SwiftGo
-            <span className="text-xs text-gray-400 text-white flex items-center gap-1">
+            <span className="text-xs text-gray-500 flex items-center gap-1">
               <User size={16} /> 4
             </span>
           </h4>
 
-          <p className="text-xs text-white">2 mins away</p>
-          <p className="text-xs text-white">Affordable, compact rides</p>
+          <p className="text-xs text-gray-500">2 mins away</p>
+          <p className="text-xs text-gray-500">Affordable, compact rides</p>
         </div>
 
         <h2 className="text-sm font-semibold">₹{props.fare?.car || 'Calculating...'}</h2>
@@ -60,7 +60,7 @@ const VehiclePanel = (props) => {
           props.setVehicleType('motorcycle');
         }}
         className="flex items-center justify-between p-4 mb-3 rounded-2xl 
-                      bg-white/5 border border-white/10 hover:bg-white/10 transition cursor-pointer"
+                      bg-white/5 border border-blue-400/30 hover:bg-blue-400/10 transition cursor-pointer"
       >
         <img
           className="h-10 w-15 object-contain"
@@ -71,13 +71,13 @@ const VehiclePanel = (props) => {
         <div className="flex-1 mx-3">
           <h4 className="text-sm font-semibold flex items-center gap-2">
             Moto
-            <span className="text-xs text-gray-400 flex text-white items-center gap-1">
+            <span className="text-xs text-gray-500 flex items-center gap-1">
               <User size={16} /> 1
             </span>
           </h4>
 
-          <p className="text-xs text-white">3 mins away</p>
-          <p className="text-xs text-white">Affordable motorcycle rides</p>
+          <p className="text-xs text-gray-500">3 mins away</p>
+          <p className="text-xs text-gray-500">Affordable motorcycle rides</p>
         </div>
 
         <h2 className="text-sm font-semibold">₹{props.fare?.motorcycle || 'Calculating...'}</h2>
@@ -90,7 +90,7 @@ const VehiclePanel = (props) => {
           props.setVehicleType('auto');
         }}
         className="flex items-center justify-between p-4 rounded-2xl 
-                      bg-white/5 border border-white/10 hover:bg-white/10 transition cursor-pointer"
+                      bg-white/5 border border-blue-400/30 hover:bg-blue-400/10 transition cursor-pointer"
       >
         <img
           className="h-10 object-contain"
@@ -101,16 +101,16 @@ const VehiclePanel = (props) => {
         <div className="flex-1 mx-3">
           <h4 className="text-sm font-semibold flex items-center gap-2">
             SwiftAuto
-            <span className="text-medium text-white flex items-center gap-1">
+            <span className="text-medium text-gray-500 flex items-center gap-1">
               <User size={16} /> 3
             </span>
           </h4>
 
-          <p className="text-xs text-white">3 mins away</p>
-          <p className="text-xs text-white">Affordable auto rides</p>
+          <p className="text-xs text-gray-500">3 mins away</p>
+          <p className="text-xs text-gray-500">Affordable auto rides</p>
         </div>
 
-        <h2 className="text-sm font-semibold">₹{props.fare?.auto || 'Calculating...'}</h2>
+        <h2 className="text-sm font-semibold">₹{props.fare?.auto || '...'}</h2>
       </div>
     </div>
   );

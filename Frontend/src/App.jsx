@@ -17,6 +17,8 @@ import CaptainProtectWapper from "./pages/CaptainProtectWapper";
 import LoginNavbar from "./components/LoginNavbar";
 import Riding from "./pages/Riding";
 import CaptainRiding from "./pages/CaptainRiding";
+import UserProfile from "./pages/UserProfile";
+import EditProfile from "./pages/EditProfile";
 
 const App = () => {
   const token = localStorage.getItem("token");
@@ -37,6 +39,16 @@ const App = () => {
             </UserProtectWrapper>
           }
         />
+        <Route path="/user/profile" element={
+          <UserProtectWrapper>
+            <UserProfile />
+          </UserProtectWrapper>
+        } />
+        <Route path="/user/edit" element={
+          <UserProtectWrapper>
+            <EditProfile />
+          </UserProtectWrapper>
+        } />
         <Route
           path="/captain-home"
           element={

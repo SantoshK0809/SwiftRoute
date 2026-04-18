@@ -8,6 +8,7 @@ import Map, {
 } from "react-map-gl/mapbox";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { SocketDataContext } from "../context/SocketContext";
+import { User, Car, MapPin, Flag } from "lucide-react";
 
 const rideRouteLayer = {
   id: "ride-route",
@@ -239,29 +240,37 @@ const LiveTracking = ({ ride, role = "user" }) => {
       }
     };
 
-    const success = (position) => {
-      const location = {
-        ltd: position.coords.latitude,
-        lng: position.coords.longitude,
-      };
-      setUserLocation(location);
-      setLocationAndRecenter(location, captainLocation);
-      emitLocationUpdate(location);
+    const updateLocation = () => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const location = {
+            ltd: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          setUserLocation(location);
+          setLocationAndRecenter(location, captainLocation);
+          emitLocationUpdate(location);
+        },
+        (geoError) => {
+          console.error("Geolocation error:", geoError);
+          setError(geoError.message || "Unable to retrieve location.");
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0,
+        },
+      );
     };
 
-    const errorHandler = (geoError) => {
-      console.error("Geolocation error:", geoError);
-      setError(geoError.message || "Unable to retrieve location.");
-    };
+    // Update location immediately
+    updateLocation();
 
-    const watcherId = navigator.geolocation.watchPosition(success, errorHandler, {
-      enableHighAccuracy: true,
-      maximumAge: 10000,
-      timeout: 10000,
-    });
+    // Set interval to update every 10 seconds
+    const intervalId = setInterval(updateLocation, 10000);
 
     return () => {
-      navigator.geolocation.clearWatch(watcherId);
+      clearInterval(intervalId);
     };
   }, [socket, role, userId, targetCaptainId, targetPassengerId, captainLocation]);
 
@@ -287,7 +296,9 @@ const LiveTracking = ({ ride, role = "user" }) => {
           {userLocation && (
             <Marker longitude={userLocation.lng} latitude={userLocation.ltd} anchor="bottom">
               <div className="flex flex-col items-center text-xs text-white">
-                <span className="mb-1 rounded-full bg-green-500 p-1 shadow-lg" />
+                <div className="mb-1 bg-green-500 rounded-full p-2 shadow-lg">
+                  <User size={16} className="text-white" />
+                </div>
                 <div className="bg-black/70 px-2 py-1 rounded-md">You</div>
               </div>
             </Marker>
@@ -296,7 +307,9 @@ const LiveTracking = ({ ride, role = "user" }) => {
           {captainLocation && (
             <Marker longitude={captainLocation.lng} latitude={captainLocation.ltd} anchor="bottom">
               <div className="flex flex-col items-center text-xs text-white">
-                <span className="mb-1 rounded-full bg-blue-500 p-1 shadow-lg" />
+                <div className="mb-1 bg-blue-500 rounded-full p-2 shadow-lg">
+                  <Car size={16} className="text-white" />
+                </div>
                 <div className="bg-black/70 px-2 py-1 rounded-md">Captain</div>
               </div>
             </Marker>
@@ -305,7 +318,9 @@ const LiveTracking = ({ ride, role = "user" }) => {
           {pickupCoords && (
             <Marker longitude={pickupCoords.lng} latitude={pickupCoords.ltd} anchor="bottom">
               <div className="flex flex-col items-center text-xs text-white">
-                <span className="mb-1 rounded-full bg-yellow-400 p-1.5 shadow-lg" />
+                <div className="mb-1 bg-yellow-400 rounded-full p-2 shadow-lg">
+                  <MapPin size={16} className="text-black" />
+                </div>
                 <div className="bg-black/70 px-2 py-1 rounded-md">Pickup</div>
               </div>
             </Marker>
@@ -314,7 +329,9 @@ const LiveTracking = ({ ride, role = "user" }) => {
           {destinationCoords && (
             <Marker longitude={destinationCoords.lng} latitude={destinationCoords.ltd} anchor="bottom">
               <div className="flex flex-col items-center text-xs text-white">
-                <span className="mb-1 rounded-full bg-red-500 p-1.5 shadow-lg" />
+                <div className="mb-1 bg-red-500 rounded-full p-2 shadow-lg">
+                  <Flag size={16} className="text-white" />
+                </div>
                 <div className="bg-black/70 px-2 py-1 rounded-md">Destination</div>
               </div>
             </Marker>
