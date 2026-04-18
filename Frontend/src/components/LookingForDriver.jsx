@@ -4,7 +4,7 @@ import { MapPin, Navigation, CreditCard, ChevronDown } from "lucide-react";
 
 const LookingForDriver = (props) => {
   return (
-    <div className="text-white">
+    <div className="text-gray-700">
       {/* HANDLE */}
 
       <div className="flex  justify-center mb-4">
@@ -17,7 +17,7 @@ const LookingForDriver = (props) => {
         }}
         className="cursor-pointer w-4 p-4"
       >
-        <ChevronDown className="text-white" size={22} />
+        <ChevronDown className="text-gray-700" size={22} />
       </h4>
 
       {/* TITLE */}
@@ -25,16 +25,11 @@ const LookingForDriver = (props) => {
         Looking for a Driver
       </h3>
 
-      <p className="text-xs text-white text-center mb-5">
+      <p className="text-xs text-gray-500 text-center mb-5">
         Connecting you with nearby drivers...
       </p>
 
       {/* LOADING ANIMATION */}
-      {/* <div className="flex justify-center mb-5 gap-2">
-        <span className="w-2.5 h-2.5 bg-blue-400 rounded-full animate-bounce"></span>
-        <span className="w-2.5 h-2.5 bg-blue-400 rounded-full animate-bounce delay-150"></span>
-        <span className="w-2.5 h-2.5 bg-blue-400 rounded-full animate-bounce delay-300"></span>
-      </div> */}
 
       <div className="flex items-center justify-center gap-2 mb-6">
         <span className="dot"></span>
@@ -54,7 +49,7 @@ const LookingForDriver = (props) => {
       {/* DETAILS */}
       <div className="w-full mt-6 space-y-3">
         {/* PICKUP */}
-        <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
+        <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-blue-400/30">
           <MapPin className="text-blue-400 mt-1" size={18} />
           <div>
             <h4 className="text-sm font-semibold">Pickup</h4>
@@ -63,7 +58,7 @@ const LookingForDriver = (props) => {
         </div>
 
         {/* DESTINATION */}
-        <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
+        <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border  border-blue-400/30">
           <Navigation className="text-blue-400 mt-1" size={18} />
           <div>
             <h4 className="text-sm font-semibold">Destination</h4>
@@ -72,7 +67,7 @@ const LookingForDriver = (props) => {
         </div>
 
         {/* PRICE */}
-        <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
+        <div className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-blue-400/30">
           <CreditCard className="text-blue-400 mt-1" size={18} />
           <div>
             <h4 className="text-sm font-semibold">₹{props.fare[props.vehicleType] || 0}</h4>

@@ -1,0 +1,248 @@
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  ArrowLeft,
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Save,
+  X,
+  Camera,
+} from "lucide-react";
+import LoginNavbar from "../components/LoginNavbar";
+
+const EditProfile = () => {
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    firstName: "Santosh",
+    lastName: "Kirtane",
+    email: "santosh@email.com",
+    phone: "+91 9876543210",
+    location: "Pune, India",
+    bio: "MERN developer building real-time apps.",
+    avatarInitials: "SK",
+  });
+
+  const [errors, setErrors] = useState({});
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleChange = (field) => (e) => {
+    setFormData({ ...formData, [field]: e.target.value });
+  };
+
+  const validate = () => {
+    let err = {};
+    if (!formData.firstName) err.firstName = "Required";
+    if (!formData.email.includes("@")) err.email = "Invalid email";
+    if (!formData.phone) err.phone = "Required";
+    setErrors(err);
+    return Object.keys(err).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!validate()) return;
+
+    setIsSaving(true);
+    setTimeout(() => {
+      setIsSaving(false);
+      navigate("/profile");
+    }, 800);
+  };
+
+  return (
+    <div className="min-h-screen bg-[#020617] text-white relative overflow-hidden">
+      <LoginNavbar />
+
+      {/* BACKGROUND GLOW */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute -top-40 -left-32 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-40 -right-32 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
+      </div>
+
+      <main className="relative z-10 pt-24 px-4 pb-12">
+        <div className="max-w-3xl mx-auto">
+          {/* BACK */}
+          <Link
+            to="/profile"
+            className="flex items-center gap-2 text-gray-400 hover:text-white mb-6"
+          >
+            <ArrowLeft size={16} />
+            Back to profile
+          </Link>
+
+          {/* HEADER */}
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold">Edit Profile</h1>
+            <p className="text-gray-400 text-sm">
+              Update your personal information
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* AVATAR */}
+            <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6 flex gap-6 items-center">
+              <div className="relative">
+                <div className="h-24 w-24 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-xl font-bold">
+                  {formData.avatarInitials}
+                </div>
+                {/* <input type="file" className="absolute -bottom-2 -right-2 h-8 w-8 bg-gray-800 rounded-lg flex items-center justify-center border border-white/10">
+                  <Camera size={14} />
+                </input> */}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    console.log(file); // later handle upload
+                  }}
+                  className="hidden"
+                  id="avatarInput"
+                />
+                <label
+                  htmlFor="avatarInput"
+                  className="absolute -bottom-2 -right-2 h-8 w-8 bg-gray-800 rounded-lg flex items-center justify-center border border-white/10 cursor-pointer hover:bg-gray-700"
+                >
+                  <Camera size={14} />
+                </label>
+              </div>
+
+              <div>
+                <h2 className="font-semibold">Profile Photo</h2>
+                <p className="text-sm text-gray-400">JPG, PNG. Max 2MB</p>
+              </div>
+            </div>
+
+            {/* PERSONAL INFO */}
+            <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6">
+              <h2 className="font-semibold mb-4">Personal Info</h2>
+
+              <div className="grid sm:grid-cols-2 gap-4">
+                {/* FIRST NAME */}
+                <div>
+                  <label className="text-sm text-gray-400">First Name</label>
+                  <div className="relative">
+                    <User
+                      className="absolute left-3 top-3 text-gray-400"
+                      size={14}
+                    />
+                    <input
+                      value={formData.firstName}
+                      onChange={handleChange("firstName")}
+                      className="w-full pl-10 p-2 mt-1 bg-black/40 border border-white/10 rounded"
+                    />
+                  </div>
+                  {errors.firstName && (
+                    <p className="text-red-400 text-xs">{errors.firstName}</p>
+                  )}
+                </div>
+
+                {/* LAST NAME */}
+                <div>
+                  <label className="text-sm text-gray-400">Last Name</label>
+                  <div className="relative">
+                    <User
+                      className="absolute left-3 top-3 text-gray-400"
+                      size={14}
+                    />
+                    <input
+                      value={formData.lastName}
+                      onChange={handleChange("lastName")}
+                      className="w-full pl-10 p-2 mt-1 bg-black/40 border border-white/10 rounded"
+                    />
+                  </div>
+                </div>
+
+                {/* EMAIL */}
+                <div className="sm:col-span-2">
+                  <label className="text-sm text-gray-400">Email</label>
+                  <div className="relative">
+                    <Mail
+                      className="absolute left-3 top-3 text-gray-400"
+                      size={14}
+                    />
+                    <input
+                      value={formData.email}
+                      onChange={handleChange("email")}
+                      className="w-full pl-10 p-2 mt-1 bg-black/40 border border-white/10 rounded"
+                    />
+                  </div>
+                  {errors.email && (
+                    <p className="text-red-400 text-xs">{errors.email}</p>
+                  )}
+                </div>
+
+                {/* PHONE */}
+                <div>
+                  <label className="text-sm text-gray-400">Phone</label>
+                  <div className="relative">
+                    <Phone
+                      className="absolute left-3 top-3 text-gray-400"
+                      size={14}
+                    />
+                    <input
+                      value={formData.phone}
+                      onChange={handleChange("phone")}
+                      className="w-full pl-10 p-2 mt-1 bg-black/40 border border-white/10 rounded"
+                    />
+                  </div>
+                </div>
+
+                {/* LOCATION */}
+                <div>
+                  <label className="text-sm text-gray-400">Location</label>
+                  <div className="relative">
+                    <MapPin
+                      className="absolute left-3 top-3 text-gray-400"
+                      size={14}
+                    />
+                    <input
+                      value={formData.location}
+                      onChange={handleChange("location")}
+                      className="w-full pl-10 p-2 mt-1 bg-black/40 border border-white/10 rounded"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* BIO */}
+            <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6">
+              <h2 className="font-semibold mb-3">About</h2>
+
+              <textarea
+                value={formData.bio}
+                onChange={handleChange("bio")}
+                className="w-full p-3 bg-black/40 border border-white/10 rounded resize-none"
+                rows={4}
+              />
+            </div>
+
+            {/* ACTIONS */}
+            <div className="flex gap-3 justify-end">
+              <button
+                type="button"
+                onClick={() => navigate("/profile")}
+                className="px-4 py-2 border border-white/20 rounded flex items-center gap-2"
+              >
+                <X size={14} /> Cancel
+              </button>
+
+              <button
+                type="submit"
+                className="px-4 py-2 bg-blue-500 rounded flex items-center gap-2"
+              >
+                <Save size={14} />
+                {isSaving ? "Saving..." : "Save"}
+              </button>
+            </div>
+          </form>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default EditProfile;

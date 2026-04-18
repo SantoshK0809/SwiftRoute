@@ -12,13 +12,13 @@ const LocationSearchPanel = ({ suggestions, setPanelOpen, setVehiclePanel, selec
               selectSuggestion(suggestion);
               setPanelOpen(true)
             }}
-            className="flex items-start gap-3 active:border-blue-400 border-2 border-gray-500 p-3 rounded-xl hover:bg-white/10 transition cursor-pointer"
+            className="flex items-start gap-3  active:border-blue-400 border-2 border-gray-500 p-3 rounded-xl hover:bg-white/10 transition cursor-pointer"
           >
             <div className="h-9 w-9 flex items-center justify-center rounded-lg bg-blue-500/10">
               <MapPin className="text-black" size={16} />
             </div>
             <div>
-              <p className="text-sm font-medium text-white">{suggestion.description}</p>
+              <p className="text-sm font-medium text-gray-500">{suggestion.description}</p>
             </div>
           </div>
         ))
