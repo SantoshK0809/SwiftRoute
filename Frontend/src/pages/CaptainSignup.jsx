@@ -5,6 +5,7 @@ import axios from "axios";
 import { CaptainDataContext } from "../context/CaptainContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { ToastContainer, toast } from 'react-toastify';
 
 const CaptainSignup = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -43,7 +44,7 @@ const CaptainSignup = () => {
         `${import.meta.env.VITE_BASE_URL}/api/captain/register`,
         newCaptain,
       );
-      console.log(`Captain Data -> ${res.data}`);
+
       if (res.status === 201) {
         const data = res.data;
         
@@ -53,6 +54,8 @@ const CaptainSignup = () => {
           alert("Signup failed: Invalid response from server");
           return;
         }
+
+        toast.success(res.data.message);
         
         localStorage.setItem("token", data.token);
         localStorage.setItem("captain", JSON.stringify(data.captain));
@@ -63,8 +66,8 @@ const CaptainSignup = () => {
       }
     } catch (err) {
       const errorMsg = err.response?.data?.message || err.message || "Signup failed";
+      toast.error(errorMsg);
       console.log("Captain signup error:", errorMsg);
-      alert(`Error: ${errorMsg}`);
     }
 
     setFirstName("");
@@ -82,7 +85,8 @@ const CaptainSignup = () => {
 
   return (
     <div className="min-h-screen bg-[#020617] flex flex-col">
-      <Navbar/>
+        <ToastContainer position="top-center" autoClose={3000} />
+      {/* <Navbar/> */}
       <div className="flex flex-1">
         {/* LEFT PANEL */}
       <div className="hidden lg:flex lg:w-1/2 relative items-center justify-center border-r border-white/10 overflow-hidden">
@@ -111,7 +115,7 @@ const CaptainSignup = () => {
       </div>
 
       {/* RIGHT PANEL */}
-      <div className="w-full lg:w-1/2 flex items-center lg:mt-24 mt-12 justify-center px-6 sm:px-10">
+      <div className="w-full lg:w-1/2 flex items-center lg:mt-6 mt-6 justify-center px-6 sm:px-10">
         <div className="w-full max-w-2xl">
           {/* Back */}
           <Link
@@ -293,7 +297,7 @@ const CaptainSignup = () => {
         </div>
       </div>
       </div>
-      <Footer/>
+      {/* <Footer/> */}
     </div>
   );
 };

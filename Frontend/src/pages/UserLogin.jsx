@@ -39,6 +39,7 @@ import { UserDataContext } from "../context/UserContext";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { ToastContainer, toast } from 'react-toastify';
 
 const UserLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -63,6 +64,8 @@ const UserLogin = () => {
         userLogin,
       );
 
+       toast.success(res.data.message);
+
       if (res.status === 200) {
         const data = res.data;
         console.log(data);
@@ -75,6 +78,8 @@ const UserLogin = () => {
       }
     } catch (err) {
       console.log(err.response?.data || err.message);
+      const errorMsg = err.response?.data?.message || "Something went wrong";
+      toast.error(errorMsg); // Error notification
     }
     setEmail("");
     setPassword("");
@@ -85,7 +90,8 @@ const UserLogin = () => {
 
   return (
     <div className="min-h-screen bg-[#020617] flex flex-col">
-      <Navbar />
+      {/* <Navbar /> */}
+      <ToastContainer position="top-center" autoClose={3000} />
       <div className="flex flex-1">
         {/* LEFT PANEL */}
       <div className="hidden lg:flex text-white lg:w-1/2 relative items-center justify-center border-r border-white/10 overflow-hidden">
@@ -203,7 +209,7 @@ const UserLogin = () => {
         </div>
       </div>
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 };

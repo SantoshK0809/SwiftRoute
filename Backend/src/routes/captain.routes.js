@@ -5,6 +5,7 @@ const {
   handleLoginCaptain,
   handleGetCaptain,
   handleLogoutCaptain,
+  handleUpdateCaptain
 } = require("../controllers/captain.controller.js");
 const { body } = require("express-validator");
 const { authCaptain } = require("../middlewares/auth.middleware.js");
@@ -46,5 +47,9 @@ router.post(
 router.get("/profile", authCaptain, handleGetCaptain);
 
 router.get("/logout", authCaptain, handleLogoutCaptain);
+
+router.patch("/update-profile", authCaptain, handleUpdateCaptain);
+
+
 
 module.exports = router;

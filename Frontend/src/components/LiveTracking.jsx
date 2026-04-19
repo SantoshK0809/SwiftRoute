@@ -171,7 +171,7 @@ const LiveTracking = ({ ride, role = "user" }) => {
           ...prev,
           latitude: (primaryLocation.ltd + secondaryLocation.ltd) / 2,
           longitude: (primaryLocation.lng + secondaryLocation.lng) / 2,
-          zoom: 12,
+          // zoom: 12,
         };
       }
 
@@ -180,7 +180,7 @@ const LiveTracking = ({ ride, role = "user" }) => {
           ...prev,
           latitude: primaryLocation.ltd,
           longitude: primaryLocation.lng,
-          zoom: 12,
+          // zoom: 12,
         };
       }
 
