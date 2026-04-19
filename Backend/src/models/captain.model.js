@@ -2,72 +2,95 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const captainSchema = new mongoose.Schema({
-  fullname: {
-    firstname: {
+const captainSchema = new mongoose.Schema(
+  {
+    fullname: {
+      firstname: {
+        type: String,
+        required: true,
+        minLength: [3, "First name must be at least 3 characters long"],
+      },
+      lastname: {
+        type: String,
+      },
+    },
+    email: {
       type: String,
       required: true,
-      minLength: [3, "First name must be at least 3 characters long"],
-    },
-    lastname: {
-      type: String,
-    },
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    lowercase: true,
-    trim: true,
-  },
-  password: {
-    type: String,
-    required: true,
-    minLength: [6, "Password must be at least 6 characters long"],
-    select: false,
-  },
-  socketId: {
-    type: String,
-    default: "",
-  },
-  status: {
-    type: String,
-    enum: ["active", "inactive"],
-    default: "inactive",
-  },
-  vehicle: {
-    color: {
-      type: String,
-    },
-    plate: {
-      type: String,
-      required: true,
-      minLength: [6, "Number plate must be at least 6 characters long"],
       unique: true,
+      lowercase: true,
+      trim: true,
     },
-    capacity: {
+    password: {
       type: String,
       required: true,
-      minLength: [1, "Capacity of vehicle must be atleast 1"],
+      minLength: [6, "Password must be at least 6 characters long"],
+      select: false,
     },
-    vehicleType: {
+    socketId: {
       type: String,
-      enum: ["auto", "car", "motorcycle"],
-      required: true,
+      default: "",
+    },
+    status: {
+      type: String,
+      enum: ["active", "inactive"],
+      default: "inactive",
+    },
+    vehicle: {
+      color: {
+        type: String,
+      },
+      plate: {
+        type: String,
+        required: true,
+        minLength: [6, "Number plate must be at least 6 characters long"],
+        unique: true,
+      },
+      capacity: {
+        type: String,
+        required: true,
+        minLength: [1, "Capacity of vehicle must be atleast 1"],
+      },
+      vehicleType: {
+        type: String,
+        enum: ["auto", "car", "motorcycle"],
+        required: true,
+      },
+      model: {
+        type: String,
+      },
+    },
+    profileImage: {
+      url: String,
+      public_id: String,
+    },
+    totalTrips: {
+      type: Number,
+      default: 0,
+    },
+    phone: {
+      type: Number,
+    },
+    address: {
+      type: String,
+    },
+    rating: {
+      type: Number,
+    },
+    location: {
+      type: {
+        type: String,
+        enum: ["Point"],
+        default: "Point",
+      },
+      coordinates: {
+        type: [Number], // [longitude, latitude]
+        default: [0, 0],
+      },
     },
   },
-  location: {
-    type: {
-      type: String,
-      enum: ["Point"],
-      default: "Point",
-    },
-    coordinates: {
-      type: [Number], // [longitude, latitude]
-      default: [0, 0],
-    },
-  },
-});
+  { timestamps: true },
+);
 
 // Create 2dsphere index for geospatial queries
 captainSchema.index({ location: "2dsphere" });

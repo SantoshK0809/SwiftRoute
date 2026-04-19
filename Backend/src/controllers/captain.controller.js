@@ -99,9 +99,24 @@ async function handleLoginCaptain(req, res) {
 
 async function handleGetCaptain(req, res) {
   try {
+    const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized access" });
+    }
+
+    const captain = req.captain._id;
+    if (!captain) {
+      return res.status(401).json({ message: "Unauthorized access" });
+    }
+
+    const captainData = await Captain.findById(captain);
+
+    if (!captainData) {
+      return res.status(404).json({ message: "Captain not found" });
+    }
     res.status(200).json({
       message: "Captain profile retrieved successfully.",
-      captain: req.captain,
+      captain: captainData,
     });
   } catch (err) {
     console.log(`Failed in getting captian. Error message ${err.message}`);
@@ -134,9 +149,56 @@ async function handleLogoutCaptain(req, res) {
   }
 }
 
+async function handleUpdateCaptain(req, res) {
+  try {
+    const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized access" });
+    }
+
+    const captainId = req.captain._id;
+    const { fullname, phone, email, address, profileImage, vehicle } = req.body;
+    const captain = await Captain.findById(captainId);
+
+    if (!captain) {
+      return res.status(404).json({ message: "Captain not found" });
+    }
+
+    const updatedCaptain = await Captain.findOneAndUpdate(
+      { _id: captainId },
+      {
+        fullname: {
+          firstname: fullname.firstname,
+          lastname: fullname.lastname,
+        },
+        email,
+        phone,
+        address,
+        profileImage,
+        vehicle: {
+          color: vehicle.color,
+          vehicleType: vehicle.vehicleType,
+          capacity: vehicle.capacity,
+          model: vehicle.model,
+          plate: vehicle.plate,
+        },
+      },
+    );
+
+    res.status(200).json({
+      message: "Captain profile updated successfully.",
+      captain: updatedCaptain,
+    });
+  } catch (err) {
+    console.log(`Failed in updating captian. Error message ${err.message}`);
+    return res.status(500).json({ message: "Internal server error." });
+  }
+}
+
 module.exports = {
   handleRegisterCaptian,
   handleLoginCaptain,
   handleGetCaptain,
   handleLogoutCaptain,
+  handleUpdateCaptain,
 };

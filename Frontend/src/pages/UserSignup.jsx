@@ -5,6 +5,7 @@ import { UserDataContext } from "../context/UserContext";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { ToastContainer, toast } from 'react-toastify';
 
 const UserSignup = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -34,6 +35,7 @@ const UserSignup = () => {
         `${import.meta.env.VITE_BASE_URL}/api/user/register`,
         newUser,
       );
+      toast.success(res.data.message);
       if (res.status === 201) {
         const data = res.data;
         setUser(data.user);
@@ -45,6 +47,9 @@ const UserSignup = () => {
       }
     } catch (err) {
       console.log(err.response.data); // THIS is what you should read
+      const errorMsg = err.response?.data?.message || err.message || "Signup failed";
+      toast.error(errorMsg);
+        console.log("User signup error:", errorMsg);
     }
 
     setFirstName("");
@@ -58,7 +63,8 @@ const UserSignup = () => {
 
   return (
     <div className="min-h-screen bg-[#020617] flex flex-col">
-      <Navbar />
+      <ToastContainer position="top-center" autoClose={3000} />
+      {/* <Navbar /> */}
       <div className="flex flex-1">
         {/* LEFT PANEL */}
       <div className="hidden lg:flex lg:w-1/2 relative items-center justify-center border-r border-white/10 overflow-hidden">
@@ -199,7 +205,7 @@ const UserSignup = () => {
         </div>
       </div>
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 };
