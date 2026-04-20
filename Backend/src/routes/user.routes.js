@@ -6,6 +6,7 @@ const {
   handleLoginUser,
   handleGetUserProfile,
   handleUserLogout,
+  handleUpdateUser,
 } = require("../controllers/user.controller.js");
 const { authUser } = require("../middlewares/auth.middleware.js");
 
@@ -35,5 +36,7 @@ router.post(
 router.get("/profile", authUser, handleGetUserProfile);
 
 router.get("/logout", authUser, handleUserLogout);
+
+router.patch("/update-profile", authUser, handleUpdateUser);
 
 module.exports = router;

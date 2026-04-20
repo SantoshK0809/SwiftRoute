@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserDataContext } from "../context/UserContext";
 import axios from "axios";
+import Loading from "../components/Loading";
 
 const UserLogout = () => {
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ const UserLogout = () => {
     handleLogout();
   }, [navigate, setUser]);
 
-  return <div>Logging out...</div>;
+  return <Loading/>;
 };
 
 export default UserLogout;
