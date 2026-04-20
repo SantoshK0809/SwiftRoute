@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
@@ -10,7 +10,9 @@ import {
   X,
   Camera,
 } from "lucide-react";
-import LoginNavbar from "../components/LoginNavbar";
+import LoginNavbar from "../components/LoginNavbar.jsx";
+import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
 
 const EditProfile = () => {
   const navigate = useNavigate();
@@ -27,6 +29,42 @@ const EditProfile = () => {
 
   const [errors, setErrors] = useState({});
   const [isSaving, setIsSaving] = useState(false);
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [profileImage, setprofileImage] = useState("");
+  const [address, setAddress] = useState("");
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function fetchUserProfile() {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/api/user/profile`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            signal: controller.signal,
+          },
+        );
+        const user = res.data.user;
+        setFirstname(user.fullname.firstname || "");
+        setLastname(user.fullname.lastname || "");
+        setEmail(user.email || "");
+        setPhone(user.phone || "");
+        setAddress(user.location || "");
+        setprofileImage(user.profileImage?.url || "");
+      } catch (error) {
+        console.log(
+          `Failed while fetching user profile. ERROR MESSAGE - ${error.message}, FULL ERROR ${error}`,
+        );
+      }
+    }
+    fetchUserProfile();
+  }, []);
 
   const handleChange = (field) => (e) => {
     setFormData({ ...formData, [field]: e.target.value });
@@ -41,19 +79,52 @@ const EditProfile = () => {
     return Object.keys(err).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validate()) return;
+    // if (!validate()) return;
 
-    setIsSaving(true);
-    setTimeout(() => {
-      setIsSaving(false);
-      navigate("/profile");
-    }, 800);
+    const updatedUser = {
+      fullname: {
+        firstname,
+        lastname,
+      },
+      email,
+      phone,
+      location: address,
+      profileImage,
+    };
+
+    // setIsSaving(true);
+    // setTimeout(() => {
+    //   setIsSaving(false);
+    //   navigate("/profile");
+    // }, 800);
+
+    try {
+      const res = await axios.patch(
+        `${import.meta.env.VITE_BASE_URL}/api/user/update-profile`,
+        updatedUser,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+      toast.success(res.data.message);
+      setPhone("");
+      setFirstname("");
+      setLastname("");
+      setEmail("");
+      setAddress("");
+      navigate("/user/profile");
+    } catch (error) {
+      toast.error("Failed to update profile.");
+    }
   };
 
   return (
     <div className="min-h-screen bg-[#020617] text-white relative overflow-hidden">
+      <ToastContainer position="top-center" autoClose={3000} />
       <LoginNavbar />
 
       {/* BACKGROUND GLOW */}
@@ -86,7 +157,7 @@ const EditProfile = () => {
             <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6 flex gap-6 items-center">
               <div className="relative">
                 <div className="h-24 w-24 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-xl font-bold">
-                  {formData.avatarInitials}
+                  {profileImage?.url}
                 </div>
                 {/* <input type="file" className="absolute -bottom-2 -right-2 h-8 w-8 bg-gray-800 rounded-lg flex items-center justify-center border border-white/10">
                   <Camera size={14} />
@@ -129,8 +200,8 @@ const EditProfile = () => {
                       size={14}
                     />
                     <input
-                      value={formData.firstName}
-                      onChange={handleChange("firstName")}
+                      value={firstname}
+                      onChange={(e) => setFirstname(e.target.value)}
                       className="w-full pl-10 p-2 mt-1 bg-black/40 border border-white/10 rounded"
                     />
                   </div>
@@ -148,8 +219,8 @@ const EditProfile = () => {
                       size={14}
                     />
                     <input
-                      value={formData.lastName}
-                      onChange={handleChange("lastName")}
+                      value={lastname}
+                      onChange={(e) => setLastname(e.target.value)}
                       className="w-full pl-10 p-2 mt-1 bg-black/40 border border-white/10 rounded"
                     />
                   </div>
@@ -164,8 +235,8 @@ const EditProfile = () => {
                       size={14}
                     />
                     <input
-                      value={formData.email}
-                      onChange={handleChange("email")}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       className="w-full pl-10 p-2 mt-1 bg-black/40 border border-white/10 rounded"
                     />
                   </div>
@@ -183,8 +254,8 @@ const EditProfile = () => {
                       size={14}
                     />
                     <input
-                      value={formData.phone}
-                      onChange={handleChange("phone")}
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
                       className="w-full pl-10 p-2 mt-1 bg-black/40 border border-white/10 rounded"
                     />
                   </div>
@@ -199,8 +270,8 @@ const EditProfile = () => {
                       size={14}
                     />
                     <input
-                      value={formData.location}
-                      onChange={handleChange("location")}
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
                       className="w-full pl-10 p-2 mt-1 bg-black/40 border border-white/10 rounded"
                     />
                   </div>
@@ -209,7 +280,7 @@ const EditProfile = () => {
             </div>
 
             {/* BIO */}
-            <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6">
+            {/* <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6">
               <h2 className="font-semibold mb-3">About</h2>
 
               <textarea
@@ -218,13 +289,13 @@ const EditProfile = () => {
                 className="w-full p-3 bg-black/40 border border-white/10 rounded resize-none"
                 rows={4}
               />
-            </div>
+            </div> */}
 
             {/* ACTIONS */}
             <div className="flex gap-3 justify-end">
               <button
                 type="button"
-                onClick={() => navigate("/profile")}
+                onClick={() => navigate("/user/profile")}
                 className="px-4 py-2 border border-white/20 rounded flex items-center gap-2"
               >
                 <X size={14} /> Cancel

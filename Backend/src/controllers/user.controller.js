@@ -97,11 +97,17 @@ async function handleLoginUser(req, res) {
 async function handleGetUserProfile(req, res) {
   try {
     // const userId = req.params;
+    const token = req.cookies.token || req.headers.authorization.split(" ")[1];
+    if(!token){
+      return res.status(401).json({ message: "Unauthorized access" });
+    }
 
-    // const user = await User.findOne({ userId });
-    // if (!user) {
-    //   return res.status(404).json({ message: "User not found." });
-    // }
+    const userId = req.user._id;
+
+    const user = await User.findOne({ _id: userId });
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
 
     // res.status(200).json({
     //   message: "User retrived successfully.",
@@ -117,7 +123,7 @@ async function handleGetUserProfile(req, res) {
 
     res.status(200).json({
       message: "User profile retrieved successfully.",
-      user: req.user,
+      user
     });
   } catch (err) {
     console.log(
@@ -158,9 +164,49 @@ async function handleUserLogout(req, res) {
   }
 }
 
+async function handleUpdateUser(req, res) {
+  try {
+    const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized access" });
+    }
+
+    const userId = req.user._id;
+    const { fullname, phone, email, location, profileImage } = req.body;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: userId },
+      {
+        fullname: {
+          firstname: fullname.firstname,
+          lastname: fullname.lastname,
+        },
+        email,
+        phone,
+        location,
+        profileImage,
+      },
+    );
+
+    res.status(200).json({
+      message: "User profile updated successfully.",
+      user: updatedUser,
+    });
+  } catch (err) {
+    console.log(`Failed in updating user. Error message ${err.message}`);
+    return res.status(500).json({ message: "Internal server error." });
+  }
+}
+
 module.exports = {
   handleRegisterUser,
   handleLoginUser,
   handleGetUserProfile,
   handleUserLogout,
+  handleUpdateUser,
 };
