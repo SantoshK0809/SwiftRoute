@@ -5,10 +5,11 @@ const {
   handleLoginCaptain,
   handleGetCaptain,
   handleLogoutCaptain,
-  handleUpdateCaptain
+  handleUpdateCaptain,
 } = require("../controllers/captain.controller.js");
 const { body } = require("express-validator");
 const { authCaptain } = require("../middlewares/auth.middleware.js");
+const { upload } = require("../services/multer.service.js");
 
 console.log(authCaptain);
 
@@ -48,8 +49,11 @@ router.get("/profile", authCaptain, handleGetCaptain);
 
 router.get("/logout", authCaptain, handleLogoutCaptain);
 
-router.patch("/update-profile", authCaptain, handleUpdateCaptain);
-
-
+router.patch(
+  "/update-profile",
+  upload.single("profileImage"),
+  authCaptain,
+  handleUpdateCaptain,
+);
 
 module.exports = router;

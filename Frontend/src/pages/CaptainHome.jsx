@@ -11,6 +11,7 @@ import LoginNavbar from "../components/LoginNavbar";
 import { SocketDataContext } from "../context/SocketContext";
 import { CaptainDataContext } from "../context/CaptainContext";
 import LiveTracking from "../components/LiveTracking";
+import CaptainLoginNavbar from "../components/CaptainLoginNavbar";
 
 const CaptainHome = () => {
   const [ridePopupPanel, setRidePopupPanel] = useState(false);
@@ -89,48 +90,48 @@ const CaptainHome = () => {
     }
   }
 
-  // Location update interval
+  // Location update
   useEffect(() => {
     if (!socket || !connected || !captain?._id) return;
 
-    const updateLocation = () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords;
-            socket.emit("update-location-captain", {
-              userId: captain._id,
-              userType: "captain",
-              location: {
-                ltd: latitude,
-                lng: longitude,
-              },
-            });
-            console.log("Location updated:", { latitude, longitude });
-          },
-          (error) => {
-            console.error("Error getting location:", error);
-          },
-          {
-            enableHighAccuracy: true,
-            timeout: 5000,
-            maximumAge: 0,
-          },
-        );
-      } else {
-        console.error("Geolocation is not supported by this browser.");
-      }
+    let watchId;
+
+    const updateLocation = (position) => {
+      const { latitude, longitude } = position.coords;
+      socket.emit("update-location-captain", {
+        userId: captain._id,
+        userType: "captain",
+        location: {
+          ltd: latitude,
+          lng: longitude,
+        },
+      });
+      console.log("Location updated:", { latitude, longitude });
     };
 
-    // Update location immediately
-    updateLocation();
+    const handleError = (error) => {
+      console.error("Error getting location:", error);
+    };
 
-    // Set interval to update every 10 seconds
-    const intervalId = setInterval(updateLocation, 10000);
+    if (navigator.geolocation) {
+      watchId = navigator.geolocation.watchPosition(
+        updateLocation,
+        handleError,
+        {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0,
+        },
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
 
-    // return () => {
-    //   clearInterval(intervalId);
-    // };
+    return () => {
+      if (watchId) {
+        navigator.geolocation.clearWatch(watchId);
+      }
+    };
   }, [socket, connected, captain]);
 
   useGSAP(() => {
@@ -163,7 +164,7 @@ const CaptainHome = () => {
       </div>
 
       
-      <LoginNavbar />
+      <CaptainLoginNavbar />
 
       {/* Online Status Pill */}
       <div className="absolute top-20 left-1/2 -translate-x-1/2 z-20">

@@ -119,9 +119,13 @@ const UserProfile = () => {
                   {user.avatarInitials}
                 </div> */}
                 {currUser && (
-                  <div className="h-24 w-24 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-2xl font-bold">
-                  {currUser?.profileImage?.url}
-                </div>
+                  <div className="h-24 w-24 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-2xl font-bold">
+                    <img
+                      src={currUser.profileImage}
+                      alt="profile"
+                      className="h-full w-full  object-cover"
+                    />
+                  </div>
                 )}
                 <button className="absolute -bottom-2 -right-2 h-8 w-8 bg-gray-800 rounded-lg flex items-center justify-center border border-white/10">
                   <Edit3 size={14} />
@@ -131,10 +135,16 @@ const UserProfile = () => {
               {/* USER INFO */}
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <h1 className="text-2xl font-bold">{user.name}</h1>
+                  {/* <h1 className="text-2xl font-bold">{user.name}</h1> */}
+                  {currUser && (
+                    <h1 className="text-2xl font-bold">
+                      {currUser?.fullname.firstname}{" "}
+                      {currUser?.fullname.lastname}
+                    </h1>
+                  )}
                   <span className="text-xs bg-blue-500/20 px-2 py-0.5 rounded flex items-center gap-1">
                     <Star size={10} className="fill-yellow-400" />
-                    {user.rating}
+                    {currUser?.rating}
                   </span>
                 </div>
 
@@ -144,14 +154,11 @@ const UserProfile = () => {
                 {currUser && (
                   <p className="text-gray-400 text-sm">
                     Member since{" "}
-                    {new Date(currUser.createdAt).toLocaleDateString(
-                      "en-IN",
-                      {
-                        day: "numeric",
-                        month: "short",
-                        year: "numeric",
-                      },
-                    )}
+                    {new Date(currUser.createdAt).toLocaleDateString("en-IN", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })}
                   </p>
                 )}
 
@@ -188,7 +195,7 @@ const UserProfile = () => {
             {currUser && (
               <div className="grid sm:grid-cols-3 gap-4 mt-6 pt-6 border-t border-white/10 text-sm">
                 <div className="flex items-center gap-2">
-                  <Mail size={14} /> {currUser?.email} 
+                  <Mail size={14} /> {currUser?.email}
                 </div>
                 <div className="flex items-center gap-2">
                   <Phone size={14} /> {currUser?.phone || "Not provided"}
@@ -197,7 +204,6 @@ const UserProfile = () => {
                   <MapPin size={14} /> {currUser?.location || "Not provided"}
                 </div>
               </div>
-
             )}
           </div>
 
@@ -256,7 +262,10 @@ const UserProfile = () => {
                 );
               })}
 
-              <Link to={"/user/logout"} className="w-full mt-4 p-3 bg-red-500/10 text-red-400 rounded flex items-center justify-center gap-2">
+              <Link
+                to={"/user/logout"}
+                className="w-full mt-4 p-3 bg-red-500/10 text-red-400 rounded flex items-center justify-center gap-2"
+              >
                 <LogOut size={14} />
                 Logout
               </Link>

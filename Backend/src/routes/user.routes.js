@@ -9,6 +9,8 @@ const {
   handleUpdateUser,
 } = require("../controllers/user.controller.js");
 const { authUser } = require("../middlewares/auth.middleware.js");
+const { upload } = require("../services/multer.service.js");
+const cloudinary = require("../utils/cloudinary.config.js");
 
 router.post(
   "/register",
@@ -37,6 +39,6 @@ router.get("/profile", authUser, handleGetUserProfile);
 
 router.get("/logout", authUser, handleUserLogout);
 
-router.patch("/update-profile", authUser, handleUpdateUser);
+router.patch("/update-profile", upload.single("profileImage"), authUser, handleUpdateUser);
 
 module.exports = router;

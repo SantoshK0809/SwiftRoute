@@ -20,11 +20,16 @@ import {
   BadgeCheck,
 } from "lucide-react";
 import LoginNavbar from "../components/LoginNavbar";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import axios from "axios";
+import CaptainLoginNavbar from "../components/CaptainLoginNavbar";
+import { SocketDataContext } from "../context/SocketContext";
+import { CaptainDataContext } from "../context/CaptainContext";
 
 const CaptainProfile = () => {
   const [currCaptain, setCurrCaptain] = useState(null);
+  const { socket, connected } = useContext(SocketDataContext);
+  const { captain } = useContext(CaptainDataContext);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -62,9 +67,110 @@ const CaptainProfile = () => {
     };
   }, []);
 
+  // Location update
+  useEffect(() => {
+    if (!socket || !connected || !captain?._id) return;
+
+    let watchId;
+
+    const updateLocation = (position) => {
+      const { latitude, longitude } = position.coords;
+      socket.emit("update-location-captain", {
+        userId: captain._id,
+        userType: "captain",
+        location: {
+          ltd: latitude,
+          lng: longitude,
+        },
+      });
+      console.log("Location updated from profile:", { latitude, longitude });
+    };
+
+    const handleError = (error) => {
+      console.error("Error getting location:", error);
+    };
+
+    if (navigator.geolocation) {
+      watchId = navigator.geolocation.watchPosition(
+        updateLocation,
+        handleError,
+        {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0,
+        },
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+
+    return () => {
+      if (watchId) {
+        navigator.geolocation.clearWatch(watchId);
+      }
+    };
+  }, [socket, connected, captain]);
+
+  const captainData = {
+    name: "Santosh",
+    email: "captain@email.com",
+    phone: "+91 9876543210",
+    location: "Pune, India",
+    memberSince: "2023",
+    rating: 4.9,
+    totalTrips: 320,
+    tier: "Gold Captain",
+    avatarInitials: "SK",
+    vehicle: {
+      model: "Swift Dzire",
+      plate: "MH12AB1234",
+      color: "White",
+      type: "Sedan",
+    },
+  };
+
+
+  const todayStats = [
+    { label: "Earnings", value: "₹1,250", icon: Wallet },
+    { label: "Hours", value: "8.5h", icon: Clock },
+    { label: "KM Driven", value: "120", icon: Gauge },
+    { label: "Trips", value: "12", icon: Car },
+  ];
+
+  const lifetimeStats = [
+    { label: "Total Trips", value: captainData.totalTrips, icon: Car },
+    { label: "Rating", value: captainData.rating, icon: Star },
+    { label: "Acceptance", value: "95%", icon: TrendingUp },
+    { label: "Awards", value: "6", icon: Award },
+  ];
+
+  const recentTrips = [
+    {
+      id: 1,
+      from: "Shivaji Nagar",
+      to: "Hinjewadi",
+      date: "Today",
+      earned: "₹220",
+    },
+    {
+      id: 2,
+      from: "Baner",
+      to: "Kothrud",
+      date: "Today",
+      earned: "₹180",
+    },
+  ];
+
+  const accountItems = [
+    { label: "Vehicle Docs", icon: FileText },
+    { label: "Payout Methods", icon: Wallet },
+    { label: "Security", icon: Shield },
+    { label: "Settings", icon: Settings },
+  ];
+
   return (
     <div className="min-h-screen bg-[#020617] text-white relative overflow-hidden">
-      <LoginNavbar />
+      <CaptainLoginNavbar />
 
       {/* BACKGROUND */}
       <div className="absolute inset-0 pointer-events-none">
@@ -90,7 +196,15 @@ const CaptainProfile = () => {
               <div className="relative">
                 {currCaptain && (
                   <div className="h-24 w-24 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-xl font-bold">
-                    {currCaptain?.profileImage?.url}
+                    {currCaptain?.profileImage ? (
+                      <img
+                        src={currCaptain.profileImage}
+                        alt="Profile"
+                        className="h-full w-full rounded-2xl object-cover"
+                      />
+                    ) : (
+                      `${currCaptain?.fullname?.firstname?.[0]}${currCaptain?.fullname?.lastname?.[0]}`
+                    ) }
                   </div>
                 )}
                 <span className="absolute -bottom-1 -right-1 h-4 w-4 bg-green-400 rounded-full border border-black animate-pulse" />
@@ -113,8 +227,8 @@ const CaptainProfile = () => {
                 {currCaptain && (
                   <div className="flex gap-2 items-center flex-wrap">
                     <h1 className="text-2xl font-bold">
-                      {currCaptain.fullname.firstname}{" "}
-                      {currCaptain.fullname.lastname}
+                      {currCaptain?.fullname?.firstname}{" "}
+                      {currCaptain?.fullname?.lastname}
                     </h1>
 
                     <span className="text-xs bg-blue-500/20 px-2 rounded flex items-center gap-1">
