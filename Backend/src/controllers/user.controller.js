@@ -2,6 +2,9 @@ const User = require("../models/user.model.js");
 const { handleCreateUser } = require("../services/user.service.js");
 const { validationResult } = require("express-validator");
 const BlacklistToken = require("../models/blacklistToken.model.js");
+const cloudinary = require("../utils/cloudinary.config.js");
+const { upload } = require("../services/multer.service.js");
+const streamifier = require("streamifier");
 
 async function handleRegisterUser(req, res) {
   try {
@@ -98,7 +101,7 @@ async function handleGetUserProfile(req, res) {
   try {
     // const userId = req.params;
     const token = req.cookies.token || req.headers.authorization.split(" ")[1];
-    if(!token){
+    if (!token) {
       return res.status(401).json({ message: "Unauthorized access" });
     }
 
@@ -123,7 +126,7 @@ async function handleGetUserProfile(req, res) {
 
     res.status(200).json({
       message: "User profile retrieved successfully.",
-      user
+      user,
     });
   } catch (err) {
     console.log(
@@ -172,12 +175,63 @@ async function handleUpdateUser(req, res) {
     }
 
     const userId = req.user._id;
-    const { fullname, phone, email, location, profileImage } = req.body;
+    let { fullname, phone, email, location } = req.body;
     const user = await User.findById(userId);
+
+    console.log("Request body:", req.body);
+    console.log("Request file:", req.file);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+
+    // Parse fullname if it's a JSON string (comes from FormData)
+    if (typeof fullname === "string") {
+      try {
+        fullname = JSON.parse(fullname);
+      } catch (e) {
+        // If parsing fails, it's already an object
+        console.log("Error in parsing name from frontend - ", e.message)
+      }
+    }
+
+    const uploadFromBuffer = (buffer) => {
+      return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          {
+            folder: "swiftRoute/users",
+            public_id: `${userId}_${Date.now()}`,
+          },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          },
+        );
+        streamifier.createReadStream(buffer).pipe(stream);
+      });
+    };
+
+    let imageUrl = user.profileImage?.url || user.profileImage || null;
+    console.log("Before upload ->", imageUrl);
+
+    try {
+      if (req.file && req.file.buffer) {
+        console.log("File received, uploading to Cloudinary...");
+        const uploadResult = await uploadFromBuffer(req.file.buffer);
+        console.log("Upload successful:", uploadResult.secure_url);
+        imageUrl = uploadResult.secure_url;
+      } else {
+        console.log("No file provided, keeping existing image");
+      }
+    } catch (uploadError) {
+      console.error("Image upload failed:", uploadError.message);
+      return res.status(400).json({ 
+        message: "Image upload failed", 
+        error: uploadError.message 
+      });
+    }
+
+    console.log("After upload ->", imageUrl);
 
     const updatedUser = await User.findOneAndUpdate(
       { _id: userId },
@@ -189,8 +243,9 @@ async function handleUpdateUser(req, res) {
         email,
         phone,
         location,
-        profileImage,
+        profileImage: imageUrl,
       },
+      { new: true },
     );
 
     res.status(200).json({
@@ -198,7 +253,7 @@ async function handleUpdateUser(req, res) {
       user: updatedUser,
     });
   } catch (err) {
-    console.log(`Failed in updating user. Error message ${err.message}`);
+    console.error(`Failed in updating user. Error message: ${err.message}`);
     return res.status(500).json({ message: "Internal server error." });
   }
 }

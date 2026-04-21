@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState, useCallback } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import axios from "axios";
@@ -53,24 +53,67 @@ const Home = () => {
   const { socket, connected } = useContext(SocketDataContext);
   const { user } = useContext(UserDataContext);
 
-  useEffect(() => {
-    const storedUserId = localStorage.getItem("userId");
-    const userId = user?._id || storedUserId;
+  // useEffect(() => {
+  //   const storedUserId = localStorage.getItem("userId");
+  //   const userId = user?._id || storedUserId;
 
-    if (socket && connected && userId) {
-      console.log("Emitting join event with userId:", userId, "user:", user);
-      socket.emit("join", { userType: "user", userId });
-    } else {
-      console.log(
-        "Socket join not emitted - socket:",
-        !!socket,
-        "connected:",
-        connected,
-        "userId:",
-        userId,
-      );
-    }
-  }, [socket, connected, user]);
+  //   if (socket && connected && userId) {
+  //     console.log("Emitting join event with userId:", userId, "user:", user);
+  //     socket.emit("join", { userType: "user", userId });
+  //   } else {
+  //     console.log(
+  //       "Socket join not emitted - socket:",
+  //       !!socket,
+  //       "connected:",
+  //       connected,
+  //       "userId:",
+  //       userId,
+  //     );
+  //   }
+  // }, [socket, connected, user]);
+
+   useEffect(() => {
+      if (!socket || !connected || !user?._id) return;
+  
+      let watchId;
+  
+      const updateLocation = (position) => {
+        const { latitude, longitude } = position.coords;
+        socket.emit("join", {
+          userId: user._id,
+          userType: "user",
+          location: {
+            ltd: latitude,
+            lng: longitude,
+          },
+        });
+        console.log("Location updated:", { latitude, longitude });
+      };
+  
+      const handleError = (error) => {
+        console.error("Error getting location:", error);
+      };
+  
+      if (navigator.geolocation) {
+        watchId = navigator.geolocation.watchPosition(
+          updateLocation,
+          handleError,
+          {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0,
+          },
+        );
+      } else {
+        console.error("Geolocation is not supported by this browser.");
+      }
+  
+      return () => {
+        if (watchId) {
+          navigator.geolocation.clearWatch(watchId);
+        }
+      };
+    }, [socket, connected, user]);
   
   useEffect(() => {
     socket.on("ride-confirmed", (data) => {
@@ -114,18 +157,37 @@ const Home = () => {
     }
   };
 
+  const debounceRef = useRef(null);
+
+  const debouncedFetchSuggestions = useCallback((address) => {
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+    debounceRef.current = setTimeout(() => {
+      fetchSuggestions(address);
+    }, 500);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, []);
+
   const handlePickupChange = (e) => {
     const value = e.target.value;
     setPickup(value);
     setActiveField("pickup");
-    fetchSuggestions(value);
+    debouncedFetchSuggestions(value);
   };
 
   const handleDestinationChange = (e) => {
     const value = e.target.value;
     setDestination(value);
     setActiveField("destination");
-    fetchSuggestions(value);
+    debouncedFetchSuggestions(value);
   };
 
   const selectSuggestion = (suggestion) => {
@@ -257,7 +319,7 @@ const Home = () => {
   };
 
   return (
-    <div className="h-screen relative overflow-hidden bg-[#020617] text-white">
+    <div className="h-screen w-full relative overflow-hidden bg-[#020617] text-white">
       {/* MAP */}
       <div className="absolute inset-0" style={{ touchAction: "none" }}> 
 

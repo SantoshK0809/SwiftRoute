@@ -220,6 +220,8 @@ const LiveTracking = ({ ride, role = "user" }) => {
       return;
     }
 
+    let watchId;
+
     const emitLocationUpdate = (location) => {
       if (!socket) return;
 
@@ -240,37 +242,35 @@ const LiveTracking = ({ ride, role = "user" }) => {
       }
     };
 
-    const updateLocation = () => {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const location = {
-            ltd: position.coords.latitude,
-            lng: position.coords.longitude,
-          };
-          setUserLocation(location);
-          setLocationAndRecenter(location, captainLocation);
-          emitLocationUpdate(location);
-        },
-        (geoError) => {
-          console.error("Geolocation error:", geoError);
-          setError(geoError.message || "Unable to retrieve location.");
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0,
-        },
-      );
+    const updateLocation = (position) => {
+      const location = {
+        ltd: position.coords.latitude,
+        lng: position.coords.longitude,
+      };
+      setUserLocation(location);
+      setLocationAndRecenter(location, captainLocation);
+      emitLocationUpdate(location);
     };
 
-    // Update location immediately
-    updateLocation();
+    const handleError = (geoError) => {
+      console.error("Geolocation error:", geoError);
+      setError(geoError.message || "Unable to retrieve location.");
+    };
 
-    // Set interval to update every 10 seconds
-    const intervalId = setInterval(updateLocation, 10000);
+    watchId = navigator.geolocation.watchPosition(
+      updateLocation,
+      handleError,
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      },
+    );
 
     return () => {
-      clearInterval(intervalId);
+      if (watchId) {
+        navigator.geolocation.clearWatch(watchId);
+      }
     };
   }, [socket, role, userId, targetCaptainId, targetPassengerId, captainLocation]);
 

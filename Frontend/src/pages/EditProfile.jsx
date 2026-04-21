@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
@@ -35,6 +35,8 @@ const EditProfile = () => {
   const [phone, setPhone] = useState("");
   const [profileImage, setprofileImage] = useState("");
   const [address, setAddress] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -81,32 +83,31 @@ const EditProfile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // if (!validate()) return;
 
-    const updatedUser = {
-      fullname: {
-        firstname,
-        lastname,
-      },
-      email,
-      phone,
-      location: address,
-      profileImage,
-    };
+    const formDataToSend = new FormData();
+    formDataToSend.append("fullname", JSON.stringify({
+      firstname,
+      lastname,
+    }));
+    formDataToSend.append("email", email);
+    formDataToSend.append("phone", phone);
+    formDataToSend.append("location", address);
+    
+    // Only append file if user selected one
+    if (selectedFile) {
+      formDataToSend.append("profileImage", selectedFile);
+    }
 
-    // setIsSaving(true);
-    // setTimeout(() => {
-    //   setIsSaving(false);
-    //   navigate("/profile");
-    // }, 800);
+    setIsSaving(true);
 
     try {
       const res = await axios.patch(
         `${import.meta.env.VITE_BASE_URL}/api/user/update-profile`,
-        updatedUser,
+        formDataToSend,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data",
           },
         },
       );
@@ -116,9 +117,13 @@ const EditProfile = () => {
       setLastname("");
       setEmail("");
       setAddress("");
+      setSelectedFile(null);
       navigate("/user/profile");
     } catch (error) {
-      toast.error("Failed to update profile.");
+      console.error("Error updating profile:", error);
+      toast.error(error.response?.data?.message || "Failed to update profile.");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -157,7 +162,10 @@ const EditProfile = () => {
             <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6 flex gap-6 items-center">
               <div className="relative">
                 <div className="h-24 w-24 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-xl font-bold">
-                  {profileImage?.url}
+                  <img
+                    src={selectedFile ? URL.createObjectURL(selectedFile) : profileImage}
+                    alt="image"
+                  />
                 </div>
                 {/* <input type="file" className="absolute -bottom-2 -right-2 h-8 w-8 bg-gray-800 rounded-lg flex items-center justify-center border border-white/10">
                   <Camera size={14} />
@@ -167,10 +175,14 @@ const EditProfile = () => {
                   accept="image/*"
                   onChange={(e) => {
                     const file = e.target.files[0];
-                    console.log(file); // later handle upload
+                    if (file) {
+                      setSelectedFile(file);
+                      console.log("File selected:", file.name);
+                    }
                   }}
                   className="hidden"
                   id="avatarInput"
+                  ref={fileInputRef}
                 />
                 <label
                   htmlFor="avatarInput"
@@ -182,7 +194,7 @@ const EditProfile = () => {
 
               <div>
                 <h2 className="font-semibold">Profile Photo</h2>
-                <p className="text-sm text-gray-400">JPG, PNG. Max 2MB</p>
+                <p className="text-sm text-gray-400">JPG, PNG. Max 5MB</p>
               </div>
             </div>
 

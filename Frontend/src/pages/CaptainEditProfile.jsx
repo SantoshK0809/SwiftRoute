@@ -14,6 +14,8 @@ import {
 import LoginNavbar from "../components/LoginNavbar";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
+import CaptainLoginNavbar from "../components/CaptainLoginNavbar";
+import { useRef } from "react";
 
 const CaptainEditProfile = () => {
   const navigate = useNavigate();
@@ -30,92 +32,175 @@ const CaptainEditProfile = () => {
   const [address, setAddress] = useState("");
   const [vehicleType, setVehicleType] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const fileInputRef = useRef(null);
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/captain/profile`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-        const captain = res.data.captain;
-        setFirstname(captain.fullname.firstname || "");
-        setLastname(captain.fullname.lastname || "");
-        setEmail(captain.email || "");
-        setPhone(captain.phone || "");
-        setAddress(captain.address || "");
-        setModel(captain.vehicle.model || "");
-        setPlate(captain.vehicle.plate || "");
-        setColor(captain.vehicle.color || "");
-        setVehicleType(captain.vehicle.vehicleType || "");
-        setCapacity(captain.vehicle.capacity || "");
-        setprofileImage(captain.profileImage || "");
-      } catch (error) {
-        toast.error("Failed to load profile data.");
-      }
-    };
-    fetchProfile();
-  }, []);
+  const handleChange = (field) => (e) => {
+    setFormData({ ...formData, [field]: e.target.value });
+  };
 
-  const updatedCaptain = {
-    fullname: {
-      firstname,
-      lastname,
-    },
-    phone,
-    email,
-    address,
-    profileImage,
-    vehicle: {
-      color,
-      capacity,
-      model,
-      vehicleType,
-      plate,
-    },
+  const validate = () => {
+    let err = {};
+    if (!formData.firstName) err.firstName = "Required";
+    if (!formData.email.includes("@")) err.email = "Invalid email";
+    if (!formData.phone) err.phone = "Required";
+    setErrors(err);
+    return Object.keys(err).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // if (!validate()) return;
 
-    // setIsSaving(true);
-    // setTimeout(() => {
-    //   setIsSaving(false);
-    //   navigate("/captain-profile");
-    // }, 800);
+    const formDataToSend = new FormData();
+    formDataToSend.append(
+      "fullname",
+      JSON.stringify({
+        firstname,
+        lastname,
+      }),
+    );
+    // formDataToSend.append("fullname[firstname]", firstname);
+    // formDataToSend.append("fullname[lastname]", lastname);
+    formDataToSend.append("email", email);
+    formDataToSend.append("phone", phone);
+    formDataToSend.append("location", address);
+    formDataToSend.append("vehicle[color]", color);
+    formDataToSend.append("vehicle[vehicleType]", vehicleType);
+    formDataToSend.append("vehicle[capacity]", capacity);
+    formDataToSend.append("vehicle[model]", model);
+    formDataToSend.append("vehicle[plate]", plate);
+
+    // Only append file if user selected one
+    if (selectedFile) {
+      formDataToSend.append("profileImage", selectedFile);
+    }
+
+    setIsSaving(true);
 
     try {
       const res = await axios.patch(
         `${import.meta.env.VITE_BASE_URL}/api/captain/update-profile`,
-        updatedCaptain,
+        formDataToSend,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
-          }
+            "Content-Type": "multipart/form-data",
+          },
         },
       );
       toast.success(res.data.message);
-      setPhone("")
+      setPhone("");
       setFirstname("");
-      setLastname("")
-      setEmail("")
-      setAddress("")
-      setColor("")
-      setPlate("")
-      setVehicleType("")
-      setModel("")
+      setLastname("");
+      setEmail("");
+      setAddress("");
+      setModel("");
+      setPlate("");
+      setColor("");
+      setVehicleType("");
+      setCapacity("");
+      setSelectedFile(null);
       navigate("/captain/profile");
     } catch (error) {
-      toast.error("Failed to update profile.");
+      console.error("Error updating profile:", error);
+      toast.error(error.response?.data?.message || "Failed to update profile.");
+    } finally {
+      setIsSaving(false);
     }
   };
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/api/captain/profile`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              // "Content-Type": "multipart/form-data",
+            },
+          },
+        );
+        const captain = res.data.captain;
+        setFirstname(captain?.fullname?.firstname || "");
+        setLastname(captain?.fullname?.lastname || "");
+        setEmail(captain?.email || "");
+        setPhone(captain?.phone || "");
+        setAddress(captain?.address || "");
+        setModel(captain?.vehicle?.model || "");
+        setPlate(captain?.vehicle?.plate || "");
+        setColor(captain?.vehicle?.color || "");
+        setVehicleType(captain?.vehicle?.vehicleType || "");
+        setCapacity(captain?.vehicle?.capacity || "");
+        setprofileImage(captain?.profileImage || "");
+      } catch (error) {
+        
+  console.log("FULL ERROR:", error.response?.data || error.message);
+  toast.error("Failed to load profile data.");
+}
+     
+    };
+    fetchProfile();
+  }, []);
+
+  // const updatedCaptain = {
+  //   fullname: {
+  //     firstname,
+  //     lastname,
+  //   },
+  //   phone,
+  //   email,
+  //   address,
+  //   profileImage,
+  //   vehicle: {
+  //     color,
+  //     capacity,
+  //     model,
+  //     vehicleType,
+  //     plate,
+  //   },
+  // };
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   // if (!validate()) return;
+
+  //   // setIsSaving(true);
+  //   // setTimeout(() => {
+  //   //   setIsSaving(false);
+  //   //   navigate("/captain-profile");
+  //   // }, 800);
+
+  //   try {
+  //     const res = await axios.patch(
+  //       `${import.meta.env.VITE_BASE_URL}/api/captain/update-profile`,
+  //       updatedCaptain,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         },
+  //       },
+  //     );
+  //     toast.success(res.data.message);
+  //     setPhone("");
+  //     setFirstname("");
+  //     setLastname("");
+  //     setEmail("");
+  //     setAddress("");
+  //     setColor("");
+  //     setPlate("");
+  //     setVehicleType("");
+  //     setModel("");
+  //     navigate("/captain/profile");
+  //   } catch (error) {
+  //     toast.error("Failed to update profile.");
+  //   }
+  // };
 
   return (
     <div className="min-h-screen bg-[#020617] text-white relative overflow-hidden">
       <ToastContainer position="top-center" autoClose={3000} />
-      <LoginNavbar />
+      <CaptainLoginNavbar />
 
       {/* BACKGROUND */}
       <div className="absolute inset-0 pointer-events-none">
@@ -140,15 +225,36 @@ const CaptainEditProfile = () => {
             {/* AVATAR */}
             <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6 flex gap-6 items-center">
               <div className="relative">
-                <div className="h-24 w-24 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-xl font-bold">
-                  {/* {formData.avatarInitials} */}
-                </div>
-
-                <input type="file" id="avatar" className="hidden" />
-
+                {profileImage ? (
+                  <img
+                    src={profileImage}
+                    alt="Profile"
+                    className="h-24 w-24 rounded-2xl object-cover"
+                  />
+                ) : (
+                  <div className="h-24 w-24 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-xl font-bold">
+                    {firstname[0]?.toUpperCase() || ""}
+                  </div>
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      setSelectedFile(file);
+                      const reader = new FileReader();
+                      reader.onload = () => setprofileImage(reader.result);
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                  className="hidden"
+                  id="avatarInput"
+                  ref={fileInputRef}
+                />
                 <label
-                  htmlFor="avatar"
-                  className="absolute -bottom-2 -right-2 h-8 w-8 bg-gray-800 rounded-lg flex items-center justify-center border border-white/10 cursor-pointer"
+                  htmlFor="avatarInput"
+                  className="absolute -bottom-2 -right-2 h-8 w-8 bg-gray-800 rounded-lg flex items-center justify-center border border-white/10 cursor-pointer hover:bg-gray-700"
                 >
                   <Camera size={14} />
                 </label>
@@ -257,9 +363,9 @@ const CaptainEditProfile = () => {
                   <label className="text-sm text-gray-400">Plate</label>
                   <input
                     value={plate}
-                      onChange={(e) => setPlate(e.target.value)}
-                      placeholder="Enter your vehicle number plate"
-                      className="w-full p-2 mt-1 bg-black/40 border border-white/10 rounded"
+                    onChange={(e) => setPlate(e.target.value)}
+                    placeholder="Enter your vehicle number plate"
+                    className="w-full p-2 mt-1 bg-black/40 border border-white/10 rounded"
                   />
                 </div>
 
