@@ -72,49 +72,49 @@ const Home = () => {
   //   }
   // }, [socket, connected, user]);
 
-   useEffect(() => {
-      if (!socket || !connected || !user?._id) return;
-  
-      let watchId;
-  
-      const updateLocation = (position) => {
-        const { latitude, longitude } = position.coords;
-        socket.emit("join", {
-          userId: user._id,
-          userType: "user",
-          location: {
-            ltd: latitude,
-            lng: longitude,
-          },
-        });
-        console.log("Location updated:", { latitude, longitude });
-      };
-  
-      const handleError = (error) => {
-        console.error("Error getting location:", error);
-      };
-  
-      if (navigator.geolocation) {
-        watchId = navigator.geolocation.watchPosition(
-          updateLocation,
-          handleError,
-          {
-            enableHighAccuracy: true,
-            timeout: 5000,
-            maximumAge: 0,
-          },
-        );
-      } else {
-        console.error("Geolocation is not supported by this browser.");
+  useEffect(() => {
+    if (!socket || !connected || !user?._id) return;
+
+    let watchId;
+
+    const updateLocation = (position) => {
+      const { latitude, longitude } = position.coords;
+      socket.emit("join", {
+        userId: user._id,
+        userType: "user",
+        location: {
+          ltd: latitude,
+          lng: longitude,
+        },
+      });
+      console.log("Location updated:", { latitude, longitude });
+    };
+
+    const handleError = (error) => {
+      console.error("Error getting location:", error);
+    };
+
+    if (navigator.geolocation) {
+      watchId = navigator.geolocation.watchPosition(
+        updateLocation,
+        handleError,
+        {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0,
+        },
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+
+    return () => {
+      if (watchId) {
+        navigator.geolocation.clearWatch(watchId);
       }
-  
-      return () => {
-        if (watchId) {
-          navigator.geolocation.clearWatch(watchId);
-        }
-      };
-    }, [socket, connected, user]);
-  
+    };
+  }, [socket, connected, user]);
+
   useEffect(() => {
     socket.on("ride-confirmed", (data) => {
       console.log("Ride confirmed:", data);
@@ -321,17 +321,17 @@ const Home = () => {
   return (
     <div className="h-screen w-full relative overflow-hidden bg-[#020617] text-white">
       {/* MAP */}
-      <div className="absolute inset-0" style={{ touchAction: "none" }}> 
-
+      {/* <div className="absolute inset-0" style={{ touchAction: "none" }}>  */}
+      <div className="absolute inset-0">
         <LiveTracking role="user" />
-        
       </div>
 
       {/* LOGO */}
       <LoginNavbar />
 
       {/* MAIN SEARCH */}
-      <div className="flex flex-col justify-end mt-10 text-gray-600 h-screen absolute top-0 w-full z-20 px-4 pb-6">
+      {/* <div className="flex flex-col justify-end mt-10 text-gray-600 h-screen absolute top-0 w-full z-20 px-4 pb-6"> */}
+      <div className="flex flex-col justify-end mt-10 text-gray-600 absolute bottom-0 w-full z-20 px-4 pb-6 pointer-events-none">
         <div className="max-w-xl mx-auto w-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5 relative">
           {/* Close button */}
           <h5

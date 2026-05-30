@@ -58,7 +58,8 @@ const EditProfile = () => {
         setEmail(user.email || "");
         setPhone(user.phone || "");
         setAddress(user.location || "");
-        setprofileImage(user.profileImage?.url || "");
+        setprofileImage(user.profileImage || "");
+        console.log("Fetched user profileImage -> :", profileImage);   
       } catch (error) {
         console.log(
           `Failed while fetching user profile. ERROR MESSAGE - ${error.message}, FULL ERROR ${error}`,
@@ -97,6 +98,8 @@ const EditProfile = () => {
     if (selectedFile) {
       formDataToSend.append("profileImage", selectedFile);
     }
+
+    console.log("Form data to send:", selectedFile )
 
     setIsSaving(true);
 
@@ -161,7 +164,7 @@ const EditProfile = () => {
             {/* AVATAR */}
             <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6 flex gap-6 items-center">
               <div className="relative">
-                <div className="h-24 w-24 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-xl font-bold">
+                <div className="h-full w-24 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-xl font-bold">
                   <img
                     src={selectedFile ? URL.createObjectURL(selectedFile) : profileImage}
                     alt="image"

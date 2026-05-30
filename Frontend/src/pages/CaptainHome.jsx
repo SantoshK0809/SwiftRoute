@@ -82,7 +82,7 @@ const CaptainHome = () => {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        }
+        },
       );
       console.log(response.data);
     } catch (error) {
@@ -163,7 +163,6 @@ const CaptainHome = () => {
         {/* <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-transparent to-background" /> */}
       </div>
 
-      
       <CaptainLoginNavbar />
 
       {/* Online Status Pill */}
@@ -181,7 +180,7 @@ const CaptainHome = () => {
         ref={captainDetailsRef}
         className="absolute bottom-0 left-0 right-0 z-20 px-4 pb-4 "
       >
-        <div className="glass rounded-2xl p-5 shadow-xl max-w-xl mx-auto border-2 border-gray-300">
+        <div className="glass rounded-2xl p-5 bg-white/40 backdrop-blur-xl shadow-xl max-w-xl mx-auto border-2 border-gray-300">
           {/* Drag handle */}
           <div className="w-12 h-1 bg-muted-foreground/20 rounded-full mx-auto mb-4" />
           <CaptainDetails setCaptainDetailsPanel={setCaptainDetailsPanel} />
