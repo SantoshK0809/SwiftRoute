@@ -3,8 +3,8 @@ import { Clock, Gauge, BookOpen } from "lucide-react";
 import { CaptainDataContext } from "../context/CaptainContext";
 
 const CaptainDetails = () => {
-
-  const {captain} = useContext(CaptainDataContext);
+  const { captain } = useContext(CaptainDataContext);
+  console.log("captain", captain);
 
   return (
     <div className="space-y-5 text-white">
@@ -18,13 +18,20 @@ const CaptainDetails = () => {
           <div className="h-12 w-12 rounded-full border border-white/20 overflow-hidden">
             <img
               className="h-full w-full object-cover"
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdlMd7stpWUCmjpfRjUsQ72xSWikidbgaI1w&s"
+              src={
+                captain?.profileImage ||
+                captain?.fullname?.firstname.charAt(0) +
+                  captain?.fullname?.lastname.charAt(0) ||
+                "User"
+              }
               alt="Captain"
             />
           </div>
 
           <div>
-            <h4 className="text-sm text-gray-600 font-semibold capitalize">{captain?.fullname?.firstname + " " + captain?.fullname?.lastname}</h4>
+            <h4 className="text-sm text-gray-600 font-semibold capitalize">
+              {captain?.fullname?.firstname + " " + captain?.fullname?.lastname}
+            </h4>
             <p className="text-xs text-gray-400">Gold Captain</p>
           </div>
         </div>

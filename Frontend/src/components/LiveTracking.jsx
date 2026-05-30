@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import Map, {
   Marker,
   NavigationControl,
@@ -45,7 +51,8 @@ const LiveTracking = ({ ride, role = "user" }) => {
   const [pickupCoords, setPickupCoords] = useState(null);
   const [destinationCoords, setDestinationCoords] = useState(null);
   const [rideRouteGeoJSON, setRideRouteGeoJSON] = useState(null);
-  const [liveTrackingRouteGeoJSON, setLiveTrackingRouteGeoJSON] = useState(null);
+  const [liveTrackingRouteGeoJSON, setLiveTrackingRouteGeoJSON] =
+    useState(null);
   const [error, setError] = useState(() => {
     if (typeof navigator === "undefined" || !("geolocation" in navigator)) {
       return "Geolocation is not available in this browser.";
@@ -68,23 +75,26 @@ const LiveTracking = ({ ride, role = "user" }) => {
   const targetCaptainId = role === "user" ? captainId : undefined;
   const targetPassengerId = role === "captain" ? passengerId : undefined;
 
-  const geocodeAddress = useCallback(async (address) => {
-    if (!address || !mapboxToken) return null;
-    try {
-      const encodedAddress = encodeURIComponent(address);
-      const response = await fetch(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodedAddress}.json?access_token=${mapboxToken}`
-      );
-      const data = await response.json();
-      if (data.features?.length > 0) {
-        const [lng, lat] = data.features[0].geometry.coordinates;
-        return { lng, ltd: lat };
+  const geocodeAddress = useCallback(
+    async (address) => {
+      if (!address || !mapboxToken) return null;
+      try {
+        const encodedAddress = encodeURIComponent(address);
+        const response = await fetch(
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodedAddress}.json?access_token=${mapboxToken}`,
+        );
+        const data = await response.json();
+        if (data.features?.length > 0) {
+          const [lng, lat] = data.features[0].geometry.coordinates;
+          return { lng, ltd: lat };
+        }
+      } catch (err) {
+        console.error("Geocoding error:", err);
       }
-    } catch (err) {
-      console.error("Geocoding error:", err);
-    }
-    return null;
-  }, [mapboxToken]);
+      return null;
+    },
+    [mapboxToken],
+  );
 
   const getRideRoute = useMemo(() => {
     if (!pickup || !destination || !mapboxToken) {
@@ -257,22 +267,25 @@ const LiveTracking = ({ ride, role = "user" }) => {
       setError(geoError.message || "Unable to retrieve location.");
     };
 
-    watchId = navigator.geolocation.watchPosition(
-      updateLocation,
-      handleError,
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0,
-      },
-    );
+    watchId = navigator.geolocation.watchPosition(updateLocation, handleError, {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0,
+    });
 
     return () => {
       if (watchId) {
         navigator.geolocation.clearWatch(watchId);
       }
     };
-  }, [socket, role, userId, targetCaptainId, targetPassengerId, captainLocation]);
+  }, [
+    socket,
+    role,
+    userId,
+    targetCaptainId,
+    targetPassengerId,
+    captainLocation,
+  ]);
 
   return (
     <div className="h-full w-full">
@@ -281,6 +294,15 @@ const LiveTracking = ({ ride, role = "user" }) => {
           Mapbox token is not configured.
         </div>
       ) : (
+        // <Map
+        //   initialViewState={viewState}
+        //   viewState={viewState}
+        //   onMove={(evt) => setViewState(evt.viewState)}
+        //   mapStyle="mapbox://styles/mapbox/streets-v12"
+        //   mapboxAccessToken={mapboxToken}
+        //   className="h-full w-full"
+        //   // style={{ touchAction: "none" }}
+        // >
         <Map
           initialViewState={viewState}
           viewState={viewState}
@@ -288,13 +310,20 @@ const LiveTracking = ({ ride, role = "user" }) => {
           mapStyle="mapbox://styles/mapbox/streets-v12"
           mapboxAccessToken={mapboxToken}
           className="h-full w-full"
-          style={{ touchAction: "none" }}
+          dragPan={true}
+          scrollZoom={true}
+          touchZoomRotate={true}
+          doubleClickZoom={true}
         >
           <NavigationControl position="top-right" />
           <GeolocateControl position="top-right" trackUserLocation />
 
           {userLocation && (
-            <Marker longitude={userLocation.lng} latitude={userLocation.ltd} anchor="bottom">
+            <Marker
+              longitude={userLocation.lng}
+              latitude={userLocation.ltd}
+              anchor="bottom"
+            >
               <div className="flex flex-col items-center text-xs text-white">
                 <div className="mb-1 bg-green-500 rounded-full p-2 shadow-lg">
                   <User size={16} className="text-white" />
@@ -305,7 +334,11 @@ const LiveTracking = ({ ride, role = "user" }) => {
           )}
 
           {captainLocation && (
-            <Marker longitude={captainLocation.lng} latitude={captainLocation.ltd} anchor="bottom">
+            <Marker
+              longitude={captainLocation.lng}
+              latitude={captainLocation.ltd}
+              anchor="bottom"
+            >
               <div className="flex flex-col items-center text-xs text-white">
                 <div className="mb-1 bg-blue-500 rounded-full p-2 shadow-lg">
                   <Car size={16} className="text-white" />
@@ -316,7 +349,11 @@ const LiveTracking = ({ ride, role = "user" }) => {
           )}
 
           {pickupCoords && (
-            <Marker longitude={pickupCoords.lng} latitude={pickupCoords.ltd} anchor="bottom">
+            <Marker
+              longitude={pickupCoords.lng}
+              latitude={pickupCoords.ltd}
+              anchor="bottom"
+            >
               <div className="flex flex-col items-center text-xs text-white">
                 <div className="mb-1 bg-yellow-400 rounded-full p-2 shadow-lg">
                   <MapPin size={16} className="text-black" />
@@ -327,12 +364,18 @@ const LiveTracking = ({ ride, role = "user" }) => {
           )}
 
           {destinationCoords && (
-            <Marker longitude={destinationCoords.lng} latitude={destinationCoords.ltd} anchor="bottom">
+            <Marker
+              longitude={destinationCoords.lng}
+              latitude={destinationCoords.ltd}
+              anchor="bottom"
+            >
               <div className="flex flex-col items-center text-xs text-white">
                 <div className="mb-1 bg-red-500 rounded-full p-2 shadow-lg">
                   <Flag size={16} className="text-white" />
                 </div>
-                <div className="bg-black/70 px-2 py-1 rounded-md">Destination</div>
+                <div className="bg-black/70 px-2 py-1 rounded-md">
+                  Destination
+                </div>
               </div>
             </Marker>
           )}
@@ -344,7 +387,11 @@ const LiveTracking = ({ ride, role = "user" }) => {
           )}
 
           {liveTrackingRouteGeoJSON && (
-            <Source id="live-tracking-route" type="geojson" data={liveTrackingRouteGeoJSON}>
+            <Source
+              id="live-tracking-route"
+              type="geojson"
+              data={liveTrackingRouteGeoJSON}
+            >
               <Layer {...liveTrackingLayer} />
             </Source>
           )}

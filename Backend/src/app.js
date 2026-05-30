@@ -8,11 +8,13 @@ const userRoutes = require("./routes/user.routes.js");
 const captainRoutes = require("./routes/captain.routes.js");
 const mapRoutes = require("./routes/maps.routes.js");
 const rideRoutes = require("./routes/ride.routes.js");
+const morgan = require("morgan");
 
 connectToDb();
 app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
+app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/user", userRoutes);
