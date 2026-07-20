@@ -131,7 +131,7 @@ SwiftRoute/
 ### Clone the Repository
 
 ```bash
-git clone <your-swiftroute-repository-url>
+git clone <https://github.com/SantoshK0809/SwiftRoute.git>
 cd SwiftRoute
 ```
 
